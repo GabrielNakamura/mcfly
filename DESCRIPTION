@@ -1,0 +1,56 @@
+Package: McFly
+Title: Model based simulation approach to estimate the influence of stabilizing selection on metacommunity structure
+Version: 0.0.0.9000
+Authors@R: c(
+            person(given = "Gabriel",
+           family = "Nakamura",
+           role = c("aut", "cre"),
+           email = "gabriel.nakamura.souza@gmail.com",
+           comment = c(ORCID = "0000-0002-5144-5312")
+                  ),
+           person(given = "Leandro",
+           family = "Duarte",
+           role = "aut",
+           email = "duarte.ldas@gmail.com",
+           comment = c(ORCID = "0000-0002-5144-5312")
+                  ),
+           person(given = "Vanderlei",
+           family = "Debastiani",
+           role = "aut"
+                  ),
+            person(given = "Marcus",
+           family = "Cianciaruso",
+           role = "ctb"
+                  ),
+          person(given = "José",
+           family = "Felizola Diniz-Filho",
+           role = "ctb"
+                  )
+           )
+Description: We introduce an R package to performe evolutionary model-based simulation approach that allows
+    to estimate the influence of stabilizing selection along the macroevolutionary dynamics of a given lineage
+    on niche-based species sorting across sets of local communities, and its consequence for species diversity gradients.
+    The package used AIC algorithm to select the evolutionary model that present the greater evidence. The metacommunity
+    simulation is made through the use of McSim functions. See McSim package for more information.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.0
+Imports: 
+    ape,
+    dplyr,
+    geiger,
+    MCSim,
+    MuMIn,
+    parallel,
+    picante,
+    reshape2,
+    vegan
+Sugests:
+Depends: 
+    R (>= 2.10)
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
