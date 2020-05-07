@@ -21,7 +21,6 @@
 #' @param output.dir.path Character string indicating the name of directory to save simulation results. Used in \code{\link{rTraitCont}}
 #' @param reps tricky argument to work in parallel process
 #'
-#' @export
 #'
 #' @return A list with parameters from simulated communities
 #'

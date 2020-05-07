@@ -6,7 +6,6 @@
 #'
 #' @return Matrix with results obtained from simulation proccess
 #' 
-#' @export
 #'
 #' @examples
 organize.list<-function(x){
