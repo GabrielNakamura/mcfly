@@ -1,6 +1,6 @@
 #' Furnariidae data set
 #'
-#' Data frame containing occurence of 102 species of Furnariidae in 1350 sample units
+#' Data frame containing occurrence of 102 species of Furnariidae in 1350 sites.
 #' 
 #'
 #' @format A data frame with 1350 rows and 102 columns:
@@ -12,10 +12,10 @@
 
 #' Phylogeny of Furnariidae species
 #'
-#' Newick object containing the phylogenetic hypothesis of 102 species of Furnariidae
+#' Newick object containing the phylogenetic hypothesis of 102 species of Furnariidae.
 #' 
 #'
-#' @format Newick containing phylogenetic relationships of 102 species of Furnariidae family
+#' @format Newick containing phylogenetic relationships of 102 species of Furnariidae family.
 #' 
 #' 
 #' 
@@ -25,7 +25,7 @@
 
 #' Environmental variable 
 #'
-#' Matrix containing environmental descriptor for occurence sites of Furnariidae species 
+#' Matrix containing environmental descriptor for the sites.
 #' 
 #'
 #' @format matrix
