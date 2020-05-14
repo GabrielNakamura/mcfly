@@ -4,7 +4,7 @@
 #'
 #' @param x List object returned from \code{\link{parallel_PAR}}
 #'
-#' @return Matrix with results obtained from simulation proccess
+#' @return Matrix with results obtained from simulation process
 #' 
 #'
 #' @examples
