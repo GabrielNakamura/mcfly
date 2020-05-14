@@ -23,9 +23,9 @@ use_mit_license("Gabriel Nakamura")
 #####include Furnaridae data#####
 load("Furnaridae.RData")
 Furnariidae<- comm.subset
-usethis::use_data(Furnaridae, mcfly, overwrite = T)
+usethis::use_data(Furnariidae, mcfly, overwrite = T)
 phylo_Furnariidae<- sub.phy
-usethis::use_data(phylo_Furnaridae)
+usethis::use_data(phylo_Furnariidae, overwrite = T)
 envir<- env.full
 usethis::use_data(envir, overwrite = T)
 
