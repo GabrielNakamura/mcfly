@@ -14,6 +14,6 @@ Maestri and Duarte 2020 \url{https://link.springer.com/chapter/10.1007/978-3-030
 envir
 }
 \description{
-Matrix containing environmental descriptor for occurence sites of Furnaridae species
+Matrix containing environmental descriptor for occurence sites of Furnariidae species
 }
 \keyword{datasets}

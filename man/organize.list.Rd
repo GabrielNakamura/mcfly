@@ -7,7 +7,7 @@
 organize.list(x)
 }
 \arguments{
-\item{x}{List object returned from \code{\link{PAR_function}}}
+\item{x}{List object returned from \code{\link{parallel_PAR}}}
 }
 \value{
 Matrix with results obtained from simulation proccess
