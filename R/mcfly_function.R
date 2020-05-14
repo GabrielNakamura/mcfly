@@ -1,6 +1,6 @@
-#' mcfly 
+#' Mcfly 
 #' 
-#' mcfly function to estimate the influence of stabilizing niche selection on species diversity across environmental gradients 
+#' Mcfly function to estimate the influence of stabilizing niche selection on species diversity across environmental gradients 
 #'
 #' @param comm Matrix containing occurence or abundance of species in samples. Species in columns and samples in rows
 #' @param subset The subset of species presented in phylogenetic tree and in comm argument
