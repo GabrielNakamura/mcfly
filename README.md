@@ -1,5 +1,5 @@
 # mcfly
-McFly - A R package to estimate the influence of stabilizing niche selection on species diversity across environmental gradients
+mcfly - A R package to estimate the influence of stabilizing niche selection on species diversity across environmental gradients
 
 ## install
 To install mcfly package use:
