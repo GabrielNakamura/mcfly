@@ -4,7 +4,7 @@ author: "Leandro Duarte, Gabriel Nakamura"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{mcfly - an R package to access the effects of environmental niche selection on species     diversity in metacommunities}
+  %\VignetteIndexEntry{mcfly - an R package to estimate the influence of environmental niche selection on species     diversity in metacommunities}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,8 +18,8 @@ knitr::opts_chunk$set(
 
 #Introduction to **mcfly** package
 
-Mcfly package was designed to access the effects of stabilizing selection along the macroevolutionary dynamics of a given lineage on niche-based species sorting accross sets of local communities, and its consequence for species diversity gradients.
-We will demonstrate in this vignette all the steps needed to carry on an analysis using the mcfly function. First of all, we need to install and read the mcfly package from github repository
+Mcfly package was designed to estimate the influence of stabilizing selection acting along the macroevolutionary dynamics of a given lineage on niche-based species sorting accross sets of local communities, and its consequence for species diversity gradients.
+We demonstrate in this vignette all steps needed to carry on analysis using the mcfly function. First of all, we need to install and read the mcfly package from github repository:
 
 ```{r setup, eval= FALSE, echo= TRUE}
 library(devtools)
@@ -29,29 +29,30 @@ library(mcfly)
 
 ##Data: Furnariidae family
 
-We will run all the analysis using occurrence data of avian species from Furnariidae family. This data is a part of the mcfly package, to read it type:
+We will run all the analysis using occurrence data of avian species from Furnariidae family. This data is part of the mcfly package. To read it, type:
 ```{r readData, eval=FALSE}
 data("Furnariidae")
 ```
-Furnariidae dataset comprises the occurence of 223 Furnariidae species distributed through the entire Neotropical region. The phylogenetic hypothesis used in this analysis was obtained from [BirdTree](https://birdtree.org/) and are presented in phylo_Furnariidae data, also presented in mcfly package.
+Furnariidae dataset comprises the occurence of 223 Furnariidae species distributed across the entire Neotropical region. The phylogenetic hypothesis used in this analysis was obtained from [BirdTree](https://birdtree.org/) and are presented in phylo_Furnariidae data, also presented in mcfly package.
 ```{r readPhy, eval=FALSE}
 data("phylo_Furnariidae")
 ```
-We also need an environmental descriptor to run mcfly function. In this example we will use a dataframe present in mcfly package that contain different environmental variables that can affect the niche preferences of species (mean anual temperature, temperature sazonality, mean anual precipitation and precipitation sazonality, besides coordinates of communities). 
+An environmental descriptor is also needed to run mcfly function. In this example we use a dataframe present in mcfly package that contains four environmental variables (mean anual temperature, temperature sazonality, mean anual precipitation and precipitation sazonality) and geographic coordinates of sites (latitude and longitude). 
 ```{r envdata, eval= FALSE}
 data("envir")
 ```
-These three data comprises the basic information needed to perform the individual-based simulation model presented in Mcfly function.
+
+These three datasets comprise the basic information needed to perform the individual-based simulation model presented in mcfly function.
 
 ##Data proccessing 
 
-Since large trees requires great computational performance and given that the power of analysis is affected by the representativeness of species pool on phylogenetic hypothesis used, we will split the phylogeny of Furnariidae species, find for subfamilies and select that presented a number of species with a sactisfatory number of occurences in the community data, at the same time that do not make the analysis very time consuming.
+Since large trees require great computational performance and given that the power of analysis is affected by the representativeness of species pool on phylogenetic hypothesis used, we splitted the phylogeny of Furnariidae species, and selected the subfamily Synallaxinae to perform the analysis, since it contains a reasonable number of species widely distributed across sites in the Neotropics.
 ```{r phylo_process, eval= FALSE}
-sub.tree<- ape::subtrees(phylo_Furnariidae) #subseting phylogeny to family level
+sub.tree<- ape::subtrees(phylo_Furnariidae) #splitting internal nodes in the phylogeny
 n.nodes<-length(sub.tree)
 nspp.nodes<-matrix(NA,n.nodes,1)
 for(i in 1:n.nodes){
-  nspp.nodes[i,]<-sub.tree[[i]]$Ntip #number of species in each sub-family
+  nspp.nodes[i,]<-sub.tree[[i]]$Ntip #number of species in each internal node
 }
 
 dim.comm.subset<-matrix(NA,nspp.nodes,2)
@@ -60,87 +61,92 @@ for(j in 1:n.nodes){
   comm.sub.phy<-Furnariidae[,sub.phy$tip.label]
   zero.row<-which(rowSums(comm.sub.phy)==0)
   comm.subset<-comm.sub.phy[-zero.row,]
-  dim.comm.subset[j,]<-dim(comm.subset) #size of all communities for each subfamily
+  dim.comm.subset[j,]<-dim(comm.subset) # number of sites showing occurrences of species belonging to each internal node
 }
 
 ```
-We choose Synallaxinae subfamily, that presented nine species distributed through 649 communities. The occurence of these species was extracted from community data frame. We also filter environmental variables and coordinates of points to match with occurences of Synallaxinae species in community data.
+We chose Synallaxinae subfamily, that presented nine species distributed through 649 communities. Species occurrences were extracted from community data frame. We also filtered environmental variables and geographic coordinates of points to match the occurrences of Synallaxinae species in community data.
 ```{r comm_procces, eval= FALSE}
 plot(sub.tree[[49]]) #Synallaxinae subfamily
 sub.phy<- sub.tree[[49]]
-comm.sub.phy<- Furnariidae[, sub.tree[[49]]$tip.label] #selecting only sites that present occurences of species from Synallaxinae subfamily
+comm.sub.phy<- Furnariidae[, sub.tree[[49]]$tip.label] #selecting only sites that present occurrences of species of Synallaxinae
 zero.row<- which(rowSums(comm.sub.phy) == 0)
-comm.subset<- comm.sub.phy[-zero.row, ] #community matrix with occurrence of Synalaxynae species
+comm.subset<- comm.sub.phy[-zero.row, ] #community matrix with occurrences of Synalaxynae species
 coords.subset<- as.matrix(envir[rownames(comm.subset), c(1,2)]) #extracting coordinates
 ```
 
-##Seting parameters to enter in Mcfly function
-The parameters that need to be set in Mcfly function is defined mainly by the characteristics of niche position of species, that is obtained from a single environmental variable. In this example we decided to use the latitude, assuming that this represent a latent variable that summarizes the variatio in a set of niche dimensions.
-The parameters that must be defined previous to run Mcfly function are:
+
+##Setting parameters to enter in mcfly function
+The parameters that need to be set in mcfly function are defined mainly by the features of species niche positions, which are defined based on a single environmental variable or a factor/principal component summarizing covariation among a number of environmental variables. In this example we decided to use latitude, assuming that this single variable represents a latent variable that summarizes the variation in a set of niche dimensions.
+The parameters that must be defined before running mcfly function are:
+
 
 * **sigma**: 
-represents the environmental niche breadth and was set as being the standard deviation of environmental variable
+represents the environmental niche breadth and was set as being the standard deviation of the environmental variable.
 
 * **root.value**:
-the trait value at the root of phylogenetic tree, was set as being the mean value of niche dimension of species
+the trait value at the root of phylogenetic tree, was set as being the mean value of niche dimension of species.
 
 * **theta**:
-the optimun value of niche position for the species. We defined this value as being the predicted values derived from the relationship among diversity (entropy) and the niche, represented by environmental variable
+the optimum value of niche position for the species. We defined this value as being the predicted value derived from a linear regression of diversity (entropy) on the niche variable (latitude) that maximized diversity.
 
 ```{r choos_params, eval=FALSE}
 env.subset<-envir[rownames(comm.subset),]
 envir<- scales::rescale(as.matrix(env.subset$Lat),c(1,100)) #scaling the environmental variable to vary between 1 and 100
 sigma<- sd(envir) #standard deviation of environmental variable
 root.value<- mean(envir) #mean value
-div<- vegan::renyi(comm.subset,scales=1) #diversity metric
+div<- vegan::renyi(comm.subset,scales=1) #diversity measure
 mod<- lm(div~envir) #linear model
-pred<- predict.lm(mod) #predicted relationship among diversity and environmental variable
+pred<- predict.lm(mod) #predicted relationship among diversity and the environmental variable
 ED<- cbind(envir,pred)
-theta<- ED[which.max(pred),1] #optimun at the midle of niche space
+theta<- ED[which.max(pred),1] #optimum niche value
 ```
 
-Finally, we choose the alpha parameter that will be used in the OU model to estimate species traits in simulation procedure presented in Mcfly function. The values was choose based on the procedure descripted in the main text.
+
+Finally, we defined the set of OU alpha parameters that will be used to simulate species traits.
 
 ```{r choos_alpha, eval= FALSE}
 OU.alpha<- c(0,0.05,0.25,1)
 ```
 
-We choose the number of runs, that indicate the number of times that the simulation will be repeated, and the number of computer cores to perform the analysis. Here we set the number of cores as being the total number of cores minus 1, but this must be set accordingly to the configuration of your personal computer
+We chose the number of runs, that indicates the number of times that the simulation will be repeated, and the number of computer cores to perform the analysis. Here we set the number of cores as being the total number of cores minus 1, but this must be set according to the configuration of your personal computer.
 ```{r nCores_runs, eval= FALSE}
 ncores<- parallel::detectCores() - 1
 ```
 
-The last parameter to set, **W.r** regulate the dispersion limitation of individuals in the simulated landscape used in individual simulation model (to see more details of simulation model used see [MCSim package](http://rstudio-pubs-static.s3.amazonaws.com/159425_80725873417e42fdb13821c10a198281.html). We used a panmitic community here, by setting W.r value as 0. Other scenarios of dispersal limitation can be used.
+The last parameter to set, **W.r** defines the dispersion limitation of individuals in the simulated landscape used in individual simulation model (to see more details of simulation model used see [MCSim package](http://rstudio-pubs-static.s3.amazonaws.com/159425_80725873417e42fdb13821c10a198281.html). We set W.r value as 0, which generates a scenerio without dispersal limitation. Other dispersal limitation scenarios might be used instead.
 
-Finally, we feed Mcfly function with these parameters
-```{r Mcfly_run, eval= FALSE}
-test.synallaxinae<- mcfly::Mcfly(comm= comm.subset, subset= FALSE, occurrence= TRUE, env= envir, site.coords= coords.subset, tree= sub.phy, OU.alpha= OU.alpha, sigma= sigma, theta= theta, root.value= root.value, runs= 100, ncores= 3, area.m2= 1, m= 0.5, JM= sum(comm.subset), JM.limit= JM,JL= rowSums(comm.subset),nu= 0, speciation.limit= 0, n.timestep= 50,W.r= 0, scenario.ID= "species.sorting", sim.ID= "data", output.dir.path= "OUTPUT_DATA")
+
+Finally, we fed mcfly function with these parameters:
+```{r mcfly_run, eval= FALSE}
+test.synallaxinae<- mcfly::mcfly(comm= comm.subset, subset= FALSE, occurrence= TRUE, env= envir, site.coords= coords.subset, tree= sub.phy, OU.alpha= OU.alpha, sigma= sigma, theta= theta, root.value= root.value, runs= 100, ncores= 3, area.m2= 1, m= 0.5, JM= sum(comm.subset), JM.limit= JM,JL= rowSums(comm.subset),nu= 0, speciation.limit= 0, n.timestep= 50,W.r= 0, scenario.ID= "species.sorting", sim.ID= "data", output.dir.path= "OUTPUT_DATA")
+
 ```
 The output of Mcfly function is a list containing the following objects:
 
 * **Entropy** : 
-A data frame containing observed diversity values for entropy 1, 2 and 12 for all communities
+A data frame containing observed diversity values for entropy 1, 2 and 12 for all communities.
 
 * **Predicted.entropy.1**:
-A matrix containing the predicted diversity value for entropy 1 for all the communities accordingly to the four alpha values
+A matrix containing the predicted diversity value for entropy 1 for all the communities accordingly to the four alpha values.
 
 * **$Predicted.entropy.2**: 
-A matrix containing the predicted diversity value for entropy 2 for all the communities accordingly to the four alpha values
+A matrix containing the predicted diversity value for entropy 2 for all the communities accordingly to the four alpha values.
 
 * **Predicted.entropy.12**:
-A matrix containing the predicted diversity value for entropy 12 for all the communities accordingly to the four alpha values
+A matrix containing the predicted diversity value for entropy 12 for all the communities accordingly to the four alpha values.
 
 * **$K.niche.position**: 
-A matrix containing the mean and lower and upper values from 95% confidence interval for K statistic estimated for the four alpha values
+A matrix containing the mean and lower and upper values from 95% confidence interval for K statistic estimated for the four alpha values.
 
 * **$Alpha.niche.position**:
-A matrix containing the mean and lower and upper values from 95% confidence interval for alpha statistic estimated for the four alpha values
+A matrix containing the mean and lower and upper values from 95% confidence interval for alpha statistic estimated for the four alpha values.
 
 * **$Sigsq.niche.position**: 
-A matrix containing the mean and lower and upper values from 95% confidence interval for sigma statistic estimated for the four alpha values
+A matrix containing the mean and lower and upper values from 95% confidence interval for sigma statistic estimated for the four alpha values.
 
 * **Z0.niche.position**: 
-A matrix containing the mean and lower and upper values from 95% confidence interval for sigma statistic estimated for the four alpha values
+A matrix containing the mean and lower and upper values from 95% confidence interval for sigma statistic estimated for the four alpha values.
 
 * **$AIC**: 
 A matrix containing the AIC statistic for the three diversity entropy for each alpha value. This table present the following format:
@@ -152,10 +158,10 @@ A matrix containing the AIC statistic for the three diversity entropy for each a
 |alpha=0.05     | -165.68       | 279    | 718    |
 |alpha=1        | 2580.99       | 1110   | 1280   |
 
-This is the statistic that suports the most probable intensity of the evolutionary niche selection that generate the community diversity patterns observed
+This is the statistic that supports the inference of the most probable strength of the stabilizing selection in the niche  associated with the observed diversity patterns.
 
 * **$W**:
-A matrix containing the weights derived from AIC for the three diversity entropy for each alpha value
+A matrix containing the weights derived from AIC for the three diversity entropy for each alpha value.
 
-* **$R2**: A matrix containing the R^2^ statistic for the three diversity entropy for each alpha value derived form a ordinary linear model
+* **$R2**: A matrix containing the R^2^ statistic for the three diversity entropy for each alpha value derived form a ordinary linear model.
 
