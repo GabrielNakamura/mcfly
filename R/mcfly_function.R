@@ -47,7 +47,21 @@ mcfly<-function(comm, subset, occurrence= FALSE, env,site.coords, tree,
                 ncores, area.m2= 1, m= 0.5, JM= sum(comm), JM.limit= JM,JL= rowSums(comm),
                 nu= 0, speciation.limit= 0, n.timestep= 50, W.r= 0, scenario.ID= "species.sorting",
                 sim.ID= "data", output.dir.path= "OUTPUT_DATA"){
+  
   mat.env<-as.matrix(env)
+  if(dim(mat.env)[2] > 1){
+    stop("\n Only one environmental gradient must be supplied in env \n")
+  }
+  if(is.matrix(comm) == FALSE){
+    stop("\n comm must be a matrix with presence/absence or species abundance in communities \n")
+  }  
+  if(dim(site.coords)[2] > 2){
+    stop("\n site.coords must be a matrix with x y sites coordinates \n")
+  }
+  if(n.timestep < 50){
+    warning("\n The number of timesteps used in the community simulation is lower than 50 \n")
+  }
+  
   rownames(mat.env)<-rownames(comm)
   obs.ent<-vegan::renyi(comm,scales=c(1,2,12))
   obs.ent.1<-obs.ent$`1`
