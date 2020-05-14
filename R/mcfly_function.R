@@ -42,7 +42,7 @@
 #' @export
 #'
 #' @examples
-mcfly<-function(comm, subset, occurrence= FALSE, env,site.coords, tree,
+Mcfly<-function(comm, subset, occurrence= FALSE, env,site.coords, tree,
                 OU.alpha, sigma,theta, root.value, runs,
                 ncores, area.m2= 1, m= 0.5, JM= sum(comm), JM.limit= JM,JL= rowSums(comm),
                 nu= 0, speciation.limit= 0, n.timestep= 50, W.r= 0, scenario.ID= "species.sorting",
