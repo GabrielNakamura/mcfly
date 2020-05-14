@@ -2,27 +2,27 @@
 #' 
 #' Auxiliar function to allow parallel computations
 #'
-#' @param OU.alpha.v Numeric vector containing values of alpha parameter to be tested
-#' @param comm Matrix with species occurence or abundances, sampling units in rows and species in columns
-#' @param subset Logical, if TRUE only a subset of species will be used in caculations
-#' @param occurrence Logical, if TRUE community matrix will be converted to species occurence
-#' @param tree Phylogenetic tree in newick format
-#' @param mat.env Matrix containing values for environmental gradient
-#' @param landscape Landscape where the simulations will go on. Object generated with \code{\link{make.landscape}} from MCSim package
-#' @param JM Numeric value indicating the total number of individuals to include in \code{\link{make.landscape}} from MCSim package
-#' @param n.timestep Numeric value indicating the number of generations in the simulation process performed with \code{\link{metasim}} from MCSim package
-#' @param spp.freq Numeric vector of regional abundance, used in \code{\link{metasim}} from MCSim package
-#' @param W.r Numeric indicating the dispersal kernel slope in \code{\link{metasim}} from MCSim package
-#' @param sigma Numeric vector indicating the standard-dviation of niche position. Argument used in \code{\link{rTraitCont}}
-#' @param theta Numeric value used in  \code{\link{rTraitCont}} to indicate the optimun for each branch
-#' @param root.value Numeric value indicating the trait value at the root to be used in \code{\link{rTraitCont}}
-#' @param scenario.ID Character setting the name for the simulation scenario. Used in \code{\link{metasim}}
-#' @param sim.ID Character string indicating the name for a particular simulation. Used in \code{\link{rTraitCont}}
-#' @param output.dir.path Character string indicating the name of directory to save simulation results. Used in \code{\link{rTraitCont}}
-#' @param reps tricky argument to work in parallel process
+#' @param OU.alpha.v Numeric vector containing values of OU alpha parameter.
+#' @param comm Matrix with species occurence or abundances, sites in rows and species in columns.
+#' @param subset Logical, if TRUE only a subset of species will be used in caculations.
+#' @param occurrence Logical, if TRUE community matrix will be converted to species occurrence.
+#' @param tree Phylogenetic tree in newick format.
+#' @param mat.env Matrix containing values for environmental gradient.
+#' @param landscape Landscape where the simulations will go on. Object generated with \code{\link{make.landscape}} from MCSim package.
+#' @param JM Numeric value indicating the total number of individuals to include in \code{\link{make.landscape}} from MCSim package.
+#' @param n.timestep Numeric value indicating the number of generations in the simulation process performed with \code{\link{metasim}} from MCSim package.
+#' @param spp.freq Numeric vector of regional abundance, used in \code{\link{metasim}} from MCSim package.
+#' @param W.r Numeric indicating the dispersal kernel slope in \code{\link{metasim}} from MCSim package.
+#' @param sigma Numeric vector indicating the standard deviation of niche position. Argument used in \code{\link{rTraitCont}}.
+#' @param theta Numeric value used in  \code{\link{rTraitCont}} to indicate the optimum for each branch.
+#' @param root.value Numeric value indicating the trait value at the root of the phylogeny to be used in \code{\link{rTraitCont}}.
+#' @param scenario.ID Character setting the name for the simulation scenario. Used in \code{\link{metasim}}.
+#' @param sim.ID Character string indicating the name for a particular simulation. Used in \code{\link{rTraitCont}}.
+#' @param output.dir.path Character string indicating the name of directory to save simulation results. Used in \code{\link{rTraitCont}}.
+#' @param reps Tricky argument to work in parallel process.
 #'
 #'
-#' @return A list with parameters from simulated communities
+#' @return A list with parameters from simulated communities.
 #'
 #' @examples
 parallel_PAR<- function(OU.alpha.v,comm,subset,occurrence,tree,mat.env,landscape,JM,n.timestep,spp.freq,W.r,
