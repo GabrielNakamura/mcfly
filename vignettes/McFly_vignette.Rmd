@@ -27,15 +27,15 @@ install_github("GabrielNakamura/mcfly")
 library(mcfly)
 ```
 
-##Data: Furnaridae family
+##Data: Furnariidae family
 
-We will run all the analysis using occurrence data of avian species from Furnaridae family. This data is a part of the mcfly package, to read it type:
+We will run all the analysis using occurrence data of avian species from Furnariidae family. This data is a part of the mcfly package, to read it type:
 ```{r readData, eval=FALSE}
-data("Furnaridae")
+data("Furnariidae")
 ```
-Furnaridae dataset comprises the occurence of 223 Furnaridae species distributed through the entire Neotropical region. The phylogenetic hypothesis used in this analysis was obtained from [BirdTree](https://birdtree.org/) and are presented in phylo_Furnaridae data, also presented in mcfly package.
+Furnariidae dataset comprises the occurence of 223 Furnariidae species distributed through the entire Neotropical region. The phylogenetic hypothesis used in this analysis was obtained from [BirdTree](https://birdtree.org/) and are presented in phylo_Furnariidae data, also presented in mcfly package.
 ```{r readPhy, eval=FALSE}
-data("phylo_Furnaridae")
+data("phylo_Furnariidae")
 ```
 We also need an environmental descriptor to run mcfly function. In this example we will use a dataframe present in mcfly package that contain different environmental variables that can affect the niche preferences of species (mean anual temperature, temperature sazonality, mean anual precipitation and precipitation sazonality, besides coordinates of communities). 
 ```{r envdata, eval= FALSE}
@@ -45,9 +45,9 @@ These three data comprises the basic information needed to perform the individua
 
 ##Data proccessing 
 
-Since large trees requires great computational performance and given that the power of analysis is affected by the representativeness of species pool on phylogenetic hypothesis used, we will split the phylogeny of Furnaridae species, find for subfamilies and select that presented a number of species with a sactisfatory number of occurences in the community data, at the same time that do not make the analysis very time consuming.
+Since large trees requires great computational performance and given that the power of analysis is affected by the representativeness of species pool on phylogenetic hypothesis used, we will split the phylogeny of Furnariidae species, find for subfamilies and select that presented a number of species with a sactisfatory number of occurences in the community data, at the same time that do not make the analysis very time consuming.
 ```{r phylo_process, eval= FALSE}
-sub.tree<- ape::subtrees(phylo_Furnaridae) #subseting phylogeny to family level
+sub.tree<- ape::subtrees(phylo_Furnariidae) #subseting phylogeny to family level
 n.nodes<-length(sub.tree)
 nspp.nodes<-matrix(NA,n.nodes,1)
 for(i in 1:n.nodes){
@@ -57,7 +57,7 @@ for(i in 1:n.nodes){
 dim.comm.subset<-matrix(NA,nspp.nodes,2)
 for(j in 1:n.nodes){
   sub.phy<-sub.tree[[j]]
-  comm.sub.phy<-Furnaridae[,sub.phy$tip.label]
+  comm.sub.phy<-Furnariidae[,sub.phy$tip.label]
   zero.row<-which(rowSums(comm.sub.phy)==0)
   comm.subset<-comm.sub.phy[-zero.row,]
   dim.comm.subset[j,]<-dim(comm.subset) #size of all communities for each subfamily
@@ -68,7 +68,7 @@ We choose Synallaxinae subfamily, that presented nine species distributed throug
 ```{r comm_procces, eval= FALSE}
 plot(sub.tree[[49]]) #Synallaxinae subfamily
 sub.phy<- sub.tree[[49]]
-comm.sub.phy<- Furnaridae[, sub.tree[[49]]$tip.label] #selecting only sites that present occurences of species from Synallaxinae subfamily
+comm.sub.phy<- Furnariidae[, sub.tree[[49]]$tip.label] #selecting only sites that present occurences of species from Synallaxinae subfamily
 zero.row<- which(rowSums(comm.sub.phy) == 0)
 comm.subset<- comm.sub.phy[-zero.row, ] #community matrix with occurrence of Synalaxynae species
 coords.subset<- as.matrix(envir[rownames(comm.subset), c(1,2)]) #extracting coordinates
