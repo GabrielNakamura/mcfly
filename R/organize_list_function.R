@@ -2,7 +2,7 @@
 #'
 #' Auxiliar function to organize the results from parallel computation
 #'
-#' @param x List object returned from \code{\link{PAR_function}}
+#' @param x List object returned from \code{\link{parallel_PAR}}
 #'
 #' @return Matrix with results obtained from simulation proccess
 #' 
