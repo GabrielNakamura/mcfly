@@ -2,42 +2,42 @@
 #' 
 #' Mcfly function to estimate the influence of stabilizing niche selection on species diversity across environmental gradients 
 #'
-#' @param comm Matrix containing occurence or abundance of species in samples. Species in columns and samples in rows
-#' @param subset The subset of species presented in phylogenetic tree and in comm argument
-#' @param occurrence Logical, if TRUE comm will be transformed to presence/absence matrix
-#' @param env Numeric vector containing values for environmental variable of sites
-#' @param site.coords X and Y coordinates for sites of community matrix
-#' @param tree Newick object containing a phylogenetic tree
-#' @param OU.alpha Numeric vector containing the values of alpha parameter of Ornstein Uhlenbeck model
-#' @param sigma Numeric value indicating the sigma parameter to be used in \code{\link[ape:rTraitCont]{rTraitCont}} function
-#' @param theta Numeric value indicating the theta parameter to be used in \code{\link{rTraitCont}}
-#' @param root.value Numeric value indicating the root.value parameter to be used in \code{\link{rTraitCont}}
-#' @param runs Numeric value indicating the number of simulations to be performed
-#' @param ncores Numeric value indicating the number of cores to perform parallel computation. Generally the number of OU.alpha values
-#' @param area.m2 Area of a site to be used in metacommunity simulation. This only matters if immigration is defined as no. individuals / m2
-#' @param m Immigration rate at each site reported as Hubbell’s m. Same as used in \code{\link{make.landscape}} of MCSim package
-#' @param JM The number of individual organisms that inhabit the metacommunity. Same argument used in \code{\link{make.landscape}}
-#' @param JM.limit The maximmun number of individual organisms that inhabit the metacommunity. Same argument used in \code{\link{make.landscape}}
-#' @param JL The number of individuals that make each individual community. Same argument used in \code{\link{make.landscape}}
-#' @param nu The probability that a novel species will appear during a recruitment event. Same argument used in \code{\link{metasim}}
-#' @param speciation.limit The speciation rate of simulated metacommunities. Same argument used in \code{\link{metasim}}
-#' @param n.timestep Number of generations in each simulation. Default is 50
-#' @param W.r The slope of the dispersal kernel, indicating how individuals move among sites. Default is 0, indicating a panmitic metacommunity
-#' @param scenario.ID Provides the name of scenario that will be simulated
-#' @param sim.ID Provides a name for the simulation, which is saved along with parameter values in the output.dir.path
-#' @param output.dir.path Folder that will be created in working directory of R session to store parameter values of simulations
+#' @param comm Matrix containing occurrences or abundances of species in sites. Species in columns and sites in rows.
+#' @param subset Logical. If TRUE, only the subset of species present in comm will be considered in community simulations. Note that niche position will be simulated for all species in the phylogeny.
+#' @param occurrence Logical. If TRUE, comm will be transformed to presence/absence matrix.
+#' @param env Numeric vector containing values of the environmental variable for the sites.
+#' @param site.coords Geographic coordinates (longitude and latitude) of sites.
+#' @param tree Newick object containing a phylogenetic tree.
+#' @param OU.alpha Numeric vector containing the values of alpha parameter of Ornstein-Uhlenbeck model.
+#' @param sigma Numeric value indicating the sigma parameter to be used in \code{\link[ape:rTraitCont]{rTraitCont}} function.
+#' @param theta Numeric value indicating the theta parameter to be used in \code{\link{rTraitCont}}.
+#' @param root.value Numeric value indicating the root.value parameter to be used in \code{\link{rTraitCont}}.
+#' @param runs Numeric value indicating the number of simulations to be performed.
+#' @param ncores Numeric value indicating the number of cores to perform parallel computation. Generally the length of OU.alpha.
+#' @param area.m2 A scalar or a vector. Area of each site to be used in metacommunity simulation. This only matters if immigration is defined as no. individuals / m2. Default value = 1.
+#' @param m Immigration rate at each site reported as Hubbell’s m. Same as used in \code{\link{make.landscape}} of MCSim package. Default value = 0.5.
+#' @param JM The number of individuals (abundance data) or species (presence/absence data) in the metacommunity. Same argument used in \code{\link{make.landscape}}.
+#' @param JM.limit The maximum number of individuals in the metacommunity. Same argument used in \code{\link{make.landscape}}.
+#' @param JL The number of individuals (abundance data) or species (presence/absence data) in each individual community. Same argument used in \code{\link{make.landscape}}.
+#' @param nu The probability that a novel species will appear during a recruitment event. Same argument used in \code{\link{metasim}}. Default value = 0.
+#' @param speciation.limit The speciation rate of simulated metacommunities. Same argument used in \code{\link{metasim}}. Default value = 0.
+#' @param n.timestep Number of time steps (generations) in each simulation. Default value = 50.
+#' @param W.r The slope of the dispersal kernel, indicating the intensity of dispersal of individuals among sites. Default = 0, indicating a panmitic metacommunity.
+#' @param scenario.ID Provides the name of scenario that will be simulated.
+#' @param sim.ID Provides a name for the simulation, which is saved along with parameter values in the output.dir.path.
+#' @param output.dir.path Name of the folder that will be created in working directory of R session to store parameter values of simulations.
 #'
-#' @return List, with the following components 
-#'     \item{Entropy}{Entropy for empirical community}
-#'     \item{Predicted.entropy.1}{Mean predicted entropy with exponent 1 for simulated metacommunities}
-#'     \item{Predicted.entropy.2}{Mean predicted entropy with exponent 2 for simulated metacommunities}
-#'     \item{Predicted.entropy.12}{Mean predicted entropy with exponent 2 for simulated metacommunities}
-#'     \item{K.niche.position}{Mean values for K statistic calculated with bootstrap procedure from simulated metacommunities}
-#'     \item{Alpha.niche.position}{Mean values for alfa parameter of OU model calculated using bootstrap procedure from simulated metacommunities}
-#'     \item{Z0.niche.position}{Mean values for root value generated from of OU model calculated using bootstrap procedure from simulated metacommunities}
-#'     \item{AIC}{Numerical matrix containing AIC statistic for each alpha value, for each entropy}
-#'     \item{W}{Numerical matrix containing w statistic of model seelction for each alpha value, for each entropy}
-#'     \item{R2}{Numerical matrix containing R2 statistic from linear model relating the observed entropies with mean predicted values of entropies}
+#' @return List, with the following components: 
+#'     \item{Entropy}{Entropy for empirical communities}.
+#'     \item{Predicted.entropy.1}{Mean predicted entropy of order 1 for simulated metacommunities}.
+#'     \item{Predicted.entropy.2}{Mean predicted entropy of order 2 for simulated metacommunities}.
+#'     \item{Predicted.entropy.12}{Mean predicted entropy of order 12 for simulated metacommunities}.
+#'     \item{K.niche.position}{Mean values for K statistic calculated with bootstrap procedure for simulated niche position}.
+#'     \item{Alpha.niche.position}{Mean values for alfa parameter of OU model calculated using bootstrap procedure for simulated niche position}.
+#'     \item{Z0.niche.position}{Mean values of simulated niche position at the root of the phylogeny calculated using bootstrap procedure}.
+#'     \item{AIC}{Numerical matrix containing AIC statistic for each OU alpha value and entropy order}.
+#'     \item{W}{Numerical matrix containing Akaike weights (wi) from model selection, for each OU alpha value and entropy order}.
+#'     \item{R2}{Numerical matrix containing R2 statistic from linear model relating the observed entropies to mean predicted entropy values, for each OU alpha value and entropy order}.
 #'     
 #' @export
 #'
