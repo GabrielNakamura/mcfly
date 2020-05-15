@@ -119,7 +119,7 @@ The last parameter to set, **W.r** defines the dispersion limitation of individu
 
 Finally, we fed mcfly function with these parameters:
 ```{r mcfly_run, eval= FALSE}
-test.synallaxinae<- mcfly::mcfly(comm= comm.subset, subset= FALSE, occurrence= TRUE, env= envir, site.coords= coords.subset, tree= sub.phy, OU.alpha= OU.alpha, sigma= sigma, theta= theta, root.value= root.value, runs= 100, ncores= 3, area.m2= 1, m= 0.5, JM= sum(comm.subset), JM.limit= JM,JL= rowSums(comm.subset),nu= 0, speciation.limit= 0, n.timestep= 50,W.r= 0, scenario.ID= "species.sorting", sim.ID= "data", output.dir.path= "OUTPUT_DATA")
+test.synallaxinae<- mcfly::Mcfly(comm= comm.subset, subset= FALSE, occurrence= TRUE, env= envir, site.coords= coords.subset, tree= sub.phy, OU.alpha= OU.alpha, sigma= sigma, theta= theta, root.value= root.value, runs= 100, ncores= 3, area.m2= 1, m= 0.5, JM= sum(comm.subset), JM.limit= JM,JL= rowSums(comm.subset),nu= 0, speciation.limit= 0, n.timestep= 50,W.r= 0, scenario.ID= "species.sorting", sim.ID= "data", output.dir.path= "OUTPUT_DATA")
 
 ```
 The output of Mcfly function is a list containing the following objects:
