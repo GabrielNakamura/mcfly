@@ -76,7 +76,7 @@ Mcfly<-function(comm, subset, occurrence= FALSE, env,site.coords, tree,
   SET<- rep(1, runs)
   ncores<- ncores
   CL<- parallel::makeCluster(ncores,type="PSOCK", setup_timeout = 0.5)
-  parallel::clusterExport(CL, c("parallel_PAR", "organize.list"))
+  #parallel::clusterExport(CL, c("parallel_PAR", "organize.list"), envir = mcfly)
   parallel::clusterEvalQ(CL,library(MCSim))
   parallel::clusterEvalQ(CL,library(ape))
   parallel::clusterEvalQ(CL,library(geiger))
