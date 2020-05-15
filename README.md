@@ -9,3 +9,5 @@ To install mcfly package use:
 To run the vignette:
 
 `vignette("McFly_vignette")`
+
+**Important**: after instalation, relaunch R 
