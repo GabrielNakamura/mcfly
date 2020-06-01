@@ -23,6 +23,7 @@ We demonstrate in this vignette all steps needed to carry on analysis using the 
 
 ```{r setup, eval= FALSE, echo= TRUE}
 library(devtools)
+install_github("sokole/MCSim")
 install_github("GabrielNakamura/mcfly")
 library(mcfly)
 ```
