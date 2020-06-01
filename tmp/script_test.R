@@ -1,8 +1,3 @@
-parallel::makeCluster()
-
-n<- c(1, 2, 3)
-CL<- cl <- parallel::makeCluster(2, setup_timeout = 0.5)
-
 
 devtools::install_github("GabrielNakamura/mcfly", force = T, build_vignettes = T)
 1
