@@ -1,7 +1,7 @@
 Package: mcfly
 Title: Model based simulation approach to estimate the influence of stabilizing selection on metacommunity structure
-Version: 0.1.0
-Authors@R: c(
+Version: 1.0.0
+Author: c(
             person(given = "Gabriel",
            family = "Nakamura",
            role = c("aut", "cre"),
@@ -33,6 +33,7 @@ Description: We introduce an R package to performe evolutionary model-based simu
     The package used AIC algorithm to select the evolutionary model that present the greater evidence. The metacommunity
     simulation is made through the use of MCSim functions. See McSim package for more information.
 License: MIT + file LICENSE
+Maintainer: Gabriel Nakamura <gabriel.nakamura.souza@gmail.com>
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
@@ -54,3 +55,7 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+Collate: 
+    'Mcfly.R'
+    'data.R'
+    'mcfly_RUN.R'
