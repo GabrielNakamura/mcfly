@@ -1,0 +1,1 @@
+utils::globalVariables(c("comm", "DBFunc_sim", "rich_sim", "IVs_obs", "env", "niche.pos"))

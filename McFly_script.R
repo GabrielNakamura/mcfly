@@ -6,14 +6,14 @@ library(devtools)
 library(usethis)
 
 #initializing package
-create_package(path = "~/OneDrive/Packages/McFly")
+create_package(path = "~/OneDrive/Packages/mcfly")
 
 #####creating package documentation####
 document()
 
 ####checking for package documentation#####
 check()
-usethis::use_package("McFly")
+usethis::use_package("mcfly")
 tools::Rdindex(RdFiles = here::here("man")) #gnerate index page
 
 

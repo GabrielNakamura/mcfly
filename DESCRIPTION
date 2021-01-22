@@ -1,6 +1,6 @@
 Package: mcfly
 Title: Model based simulation approach to estimate the influence of stabilizing selection on metacommunity structure
-Version: 1.0.0
+Version: 1.0.2
 Author: c(
             person(given = "Gabriel",
            family = "Nakamura",
@@ -27,11 +27,13 @@ Author: c(
            role = "ctb"
                   )
            )
-Description: We introduce an R package to performe evolutionary model-based simulation approach that allows
-    to estimate the influence of stabilizing selection along the macroevolutionary dynamics of a given lineage
-    on niche-based species sorting across sets of local communities, and its consequence for species diversity gradients.
-    The package used AIC algorithm to select the evolutionary model that present the greater evidence. The metacommunity
-    simulation is made through the use of MCSim functions. See McSim package for more information.
+Description: We introduce mcfly, an R package to perform evolutionary model-based simulation approach that allows
+    to estimate the influence of stabilizing selection on niche-based species sorting of a given lineage
+    distributed across sets of local communities (a metacommunity).
+    mcfly package use an ABC (Aproximate Bayesian Computation) coupled with an individual based simulation model algorithm to infer the force of evolutionary 
+    stabilizing selection that present the most prabability to
+    generate the diversity gradient observed in the metacommunity analized. The simulation producedure is made through the use of MCSim functions.
+    See MCSim package for more information on individual based model.
 License: MIT + file LICENSE
 Maintainer: Gabriel Nakamura <gabriel.nakamura.souza@gmail.com>
 Encoding: UTF-8
@@ -40,13 +42,15 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.0
 Imports: 
     ape,
-    dplyr,
+    FD,
     geiger,
+    HDInterval,
     MCSim,
-    MuMIn,
     parallel,
     picante,
     reshape2,
+    scales,
+    stats,
     vegan
 Sugests:
 Depends: 
@@ -56,6 +60,9 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 Collate: 
-    'Mcfly.R'
     'data.R'
-    'mcfly_RUN.R'
+    'function_ImportanceVal_V2_internal_mcfly.R'
+    'function_dimensionality_internal_mcfly.R'
+    'global.R'
+    'mcfly.R'
+    'mcfly_RUN_internal.R'
