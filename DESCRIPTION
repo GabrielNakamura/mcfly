@@ -47,6 +47,7 @@ Imports:
     HDInterval,
     MCSim,
     parallel,
+    phytools,
     picante,
     reshape2,
     scales,

@@ -18,11 +18,10 @@ knitr::opts_chunk$set(
 
 # Introduction to **mcfly** package
 
-Mcfly package was designed to estimate the influence of stabilizing selection acting along the macroevolutionary dynamics of a given lineage on niche-based species sorting accross sets of local communities, and its consequence for species diversity gradients. We demonstrate in this vignette all steps needed to carry on analysis using the mcfly function. First of all, we need to install and read the mcfly package from github repository:
+Mcfly package was designed to estimate the influence of stabilizing selection acting along the macroevolutionary dynamics of a given lineage on niche-based species sorting across sets of local communities. By coupling an ABC approach with an individual-based simulation model, mcfly find for the parameters of macroevolutionary dynamics (specifically, alpha parameter) that are the most probable to generate the diversity gradients in a given metacommunity. In this vignette we will demonstrate all the steps needed to carry on analysis using the mcfly package First of all, we need to install and read the mcfly package from github repository:
 
 ```{r setup, eval= FALSE, echo= TRUE}
 library(devtools)
-install_github("sokole/MCSim")
 install_github("GabrielNakamura/mcfly")
 library(mcfly)
 ```
