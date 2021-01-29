@@ -4,7 +4,7 @@ author: "Leandro Duarte, Gabriel Nakamura"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{mcfly - an R package to access the effects of environmental niche selection on species     diversity in metacommunities}
+  %\VignetteIndexEntry{mcfly - an R package to evaluate the influence of the adaptation rate of species niche positions on biological diversity gradients across metacommunities}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 #Introduction to **mcfly** package
 
-Mcfly package was designed to access the effects of stabilizing selection along the macroevolutionary dynamics of a given lineage on niche-based species sorting accross sets of local communities, and its consequence for species diversity gradients.
+Mcfly package was designed to evaluate the influence of the adaptation rate of species niche positions along the macroevolutionary dynamics of a given lineage on niche-based species sorting accross sets of local species assemblages, and ultimately on biological diversity gradients across metacommunities.
 We will demonstrate in this vignette all the steps needed to carry on an analysis using the mcfly function. First of all, we need to install and read the mcfly package from github repository
 
 ```{r setup, eval= FALSE, echo= TRUE}
