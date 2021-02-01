@@ -6,14 +6,14 @@ library(devtools)
 library(usethis)
 
 #initializing package
-create_package(path = "~/OneDrive/Packages/McFly")
+create_package(path = "~/OneDrive/Packages/mcfly")
 
 #####creating package documentation####
 document()
 
 ####checking for package documentation#####
 check()
-usethis::use_package("McFly")
+usethis::use_package("mcfly")
 tools::Rdindex(RdFiles = here::here("man")) #gnerate index page
 
 
@@ -22,10 +22,10 @@ use_mit_license("Gabriel Nakamura")
 
 #####include Furnaridae data#####
 load("Furnaridae.RData")
-Furnaridae<- comm.subset
-usethis::use_data(Furnaridae, mcfly, overwrite = T)
-phylo_Furnaridae<- sub.phy
-usethis::use_data(phylo_Furnaridae)
+Furnariidae<- comm.subset
+usethis::use_data(Furnariidae, mcfly, overwrite = T)
+phylo_Furnariidae<- sub.phy
+usethis::use_data(phylo_Furnariidae, overwrite = T)
 envir<- env.full
 usethis::use_data(envir, overwrite = T)
 
