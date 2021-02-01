@@ -1,4 +1,4 @@
-#' @title mcfly
+#' @title Estimating the influence of stabilizing selection on species distribution
 #'
 #' @description mcfly function to estimate the influence of stabilizing niche selection on species diversity across environmental gradients 
 #' 
@@ -66,8 +66,28 @@
 #'     \item{HPD_Alpha}{Numerical vector of lenght two with lower and upper limits of the HPD distribution for alpha parameter.}
 #'     \item{W_Posterior_Distribution}{Numerical vector with W.r values of posterior distribution.}
 #'     \item{HPD_w}{Numerical vector of length two with lower and upper limits of the HOD distribution for W.r parameter.}
+#' 
+#' 
+#' @examples 
+#'     \dontrun{
 #'     
+#'      # read datasets 
+#'      comm <- data("Furnariidae") # community matrix
+#'      phylo <- data("phylo_Furnariidae") # phylogenetic hypothesis
+#'      envir_furnariidae <- data("envir") 
+#'      coords <- envir_furnariidae[, c(1, 2)] # site coordinates
+#'      envir <- envir_furnariidae[, -c(1, 2)] # environmental variables
+#'      # run mcfly function
+#'      res_mcfly <- mcfly(comm = comm,
+#'            phylo = phylo, 
+#'            envir = envir, 
+#'            xy.coords = coords, 
+#'            )
+#'            
+#'     }
+#' 
 #' @export
+#' 
 mcfly<- function(comm, phylo, envir, xy.coords,
                      occurrence = TRUE, entropy.order = 1,
                      niche.breadth = 10, 
