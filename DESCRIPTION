@@ -1,13 +1,37 @@
 Package: mcfly
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person(given = "First",
-           family = "Last",
+Title: Model based simulation approach to estimate the influence of stabilizing selection on metacommunity structure
+Version: 0.2.0
+Authors@R: c(
+            person(given = "Gabriel",
+           family = "Nakamura",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+           email = "gabriel.nakamura.souza@gmail.com",
+           comment = c(ORCID = "0000-0002-5144-5312")
+                  ),
+           person(given = "Leandro",
+           family = "Duarte",
+           role = "aut",
+           email = "duarte.ldas@gmail.com",
+           comment = c(ORCID = "0000-0002-5144-5312")
+                  ),
+           person(given = "Vanderlei",
+           family = "Debastiani",
+           role = "aut"
+                  ),
+            person(given = "Marcus",
+           family = "Cianciaruso",
+           role = "ctb"
+                  ),
+          person(given = "José",
+           family = "Felizola Diniz-Filho",
+           role = "ctb"
+                  )
+           )
+Description: We introduce an R package to performe evolutionary model-based simulation approach that allows
+    to estimate the influence of stabilizing selection along the macroevolutionary dynamics of a given lineage
+    on niche-based species sorting across sets of local communities, and its consequence for species diversity gradients.
+    The package used AIC algorithm to select the evolutionary model that present the greater evidence. The metacommunity
+    simulation is made through the use of McSim functions. See McSim package for more information.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
