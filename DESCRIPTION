@@ -32,8 +32,7 @@ Description: We introduce an R package to performe evolutionary model-based simu
     on niche-based species sorting across sets of local communities, and its consequence for species diversity gradients.
     The package used AIC algorithm to select the evolutionary model that present the greater evidence. The metacommunity
     simulation is made through the use of McSim functions. See McSim package for more information.
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
