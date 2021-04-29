@@ -1,11 +1,10 @@
 ---
-title: "mcfly"
+title: "An introduction to mcfly package"
 author: "Leandro Duarte, Gabriel Nakamura"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-
-  %\VignetteIndexEntry{mcfly - an R package to evaluate the influence of the adaptation rate of species niche positions on biological diversity gradients across metacommunities}
+  %\VignetteIndexEntry{An introduction to mcfly package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

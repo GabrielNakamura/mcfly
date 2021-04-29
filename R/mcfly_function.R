@@ -1,36 +1,36 @@
 #' Title Estimating the influence of stabilizing selection on species distribution
 #'
-#' @description mcfly function to estimate the influence of stabilizing niche selection on species diversity across environmental gradients 
+#' @description mcfly function to estimate the influence of stabilizing niche selection on species diversity across environmental gradients
 #'
-#' @details This function estimate the influence of stabilizing niche selection on species diversity across environmental gradients by applying to 
-#' a occurrence matrix of species containing presence/absence or abundance an Approximate Bayesian Computation (ABC) framework. We used in ABC a individual 
-#' based-model from MCSim package 
-#' 
-#' 
+#' @details This function estimate the influence of stabilizing niche selection on species diversity across environmental gradients by applying to
+#' a occurrence matrix of species containing presence/absence or abundance an Approximate Bayesian Computation (ABC) framework. We used in ABC a individual
+#' based-model from MCSim package
+#'
+#'
 #' @param comm Matrix containing occurrences or abundances of species in sites. Species in columns and sites in rows.
 #' @param phylo Newick object containing the phylogenetic relationship among species.
-#' @param envir A one column matrix containing environmental variable for each community 
-#' @param xy.coords A two column matrix containing the coordinates of each community 
-#' @param occurrence Logical argument (TRUE or FALSE) indicating if community matrix must be transformed to presence/absence 
+#' @param envir A one column matrix containing environmental variable for each community
+#' @param xy.coords A two column matrix containing the coordinates of each community
+#' @param occurrence Logical argument (TRUE or FALSE) indicating if community matrix must be transformed to presence/absence
 #' @param entropy.order Numeric value indicating the scale of Rényi diversity, as accepted by \code{\link{renyi}}. Default is 1
 #' @param niche.breadth Numeric value indicating the width of niche of species in the metacommunity, as accepted by \code{\link{metasim}}. Default is 10
 #' @param m Numeric value indicating the immigration rate at each site, reported as Hubbel´s m. This is the same parameter accepted by \code{\link{metasim}}.
-#' @param n.timestep Numeric value indicating the number of timesteps used in the simulation of metacommunities, 
+#' @param n.timestep Numeric value indicating the number of timesteps used in the simulation of metacommunities,
 #'     this is the same argument used in \code{\link{metasim}}. Default is 50, it is not recommended the use of lower values.
-#' @param OU.alpha Character indicating the type of prior that will be used in ABC model. The options were "uniform" for a uniform sample of 
+#' @param OU.alpha Character indicating the type of prior that will be used in ABC model. The options were "uniform" for a uniform sample of
 #'     alpha values and "half-life" for a prior of alpha values represented as being half-life values, calculated as being log().
 #' @param W.r.prior Logical (TRUE or FALSE) indicating if the the W.r parameter would be a single value (FALSE) with value of 0, indicating a panmictic metacommunity
-#'     or follow a prior distribution (TRUE) of values calculated as being the slopes of dispersal kernel indicating the contribution of species from neighboring patches 
+#'     or follow a prior distribution (TRUE) of values calculated as being the slopes of dispersal kernel indicating the contribution of species from neighboring patches
 #'     to the local immigrant pool.
-#' @param summary.stat Character indicating the type of summary statistic that will be used in ABC model. Default is "correlation", that is calculated 
+#' @param summary.stat Character indicating the type of summary statistic that will be used in ABC model. Default is "correlation", that is calculated
 #'     as the correlation between the diversity values calculated according to the Rényi scale defined in entropy.order argument.
 #' @param tol Numeric value that defines the tolerance value (calculated as 1 - correlation) used in ABC model to assemble the posterior distribution. Default is 0.2.
 #' @param sample.size.posterior Numeric value that defines the minimum size of the posterior distribution. Default is 240.
 #' @param max.sample.size.prior Numeric value that defines the maximum size of the posterior distribution. Default is 2400.
-#' @param HPD Numeric value indicating the probability mass for the Highest Density Interval for the posterior 
+#' @param HPD Numeric value indicating the probability mass for the Highest Density Interval for the posterior
 #'     probability distribution obtained in ACB model. This is the same value used in \code{\link{hdi}}. Default is 0.9.
 #' @param return.comm Logical (TRUE/FALSE), indicating if the simulated metacommunities must be returned in the output. Default is FALSE.
-#' @param return.w.priors  Logical (TRUE/FALSE), indicating if the prior distribution of W.r values used in ABC model must be returned in the output. 
+#' @param return.w.priors  Logical (TRUE/FALSE), indicating if the prior distribution of W.r values used in ABC model must be returned in the output.
 #'     Default is FALSE
 #' @param return.alpha.priors Logical (TRUE/FALSE), indicating if the the prior distribution of alpha values must be returned in the output. Default is FALSE.
 #' @param parallel Numerical value indicating the numbers of cores that must be used in the parallel computation. Default is NULL, indicating that the
@@ -38,19 +38,20 @@
 #' @param scenario.ID Character indicating the name of the simulation scenario. The same as used in \code{\link{metasim}}. Default is "mcfly".
 #' @param output.dir.path Character indicating the name of directory to save simulations results and metadata used in \code{\link{metasim}}. Default is "delorean".
 #'
+#'
 #' @return
 #' @export
 #'
 mcfly <- function(comm, phylo, envir, xy.coords,
                      occurrence = TRUE, entropy.order = 1,
-                     niche.breadth = 10, 
+                     niche.breadth = 10,
                      m = 0.5,
                      n.timestep = 50,
                      OU.alpha=c("uniform","half-life"),
                      W.r.prior = FALSE,
-                     summary.stat = "correlation", 
+                     summary.stat = "correlation",
                      tol = 0.2,
-                     sample.size.posterior = 240, max.sample.size.prior = 2400, 
+                     sample.size.posterior = 240, max.sample.size.prior = 2400,
                      HPD = 0.9,
                      return.comm = FALSE,
                      return.w.priors = FALSE,
@@ -88,7 +89,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   if(any(!all(colnames(comm) %in% phylo$tip.label))){
     stop("there is at least one species in the metacommunity not present in the phylogeny")
   }
-  
+
   if(!ape::is.ultrametric(phylo)){
     stop("phylo is not an ultrametric tree")
   }
@@ -99,22 +100,22 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   DRoot.mat[,2]<-log(2)/(DRoot.mat[,1])
   DRoot.mat[,3]<-log(2)/(0.03333333*DRoot.mat[,1])
   if(OU.alpha=="uniform"){
-    prior.alpha<-runif(10*max.sample.size.prior, min = DRoot.mat[,2],
+    prior.alpha <- stats::runif(10*max.sample.size.prior, min = DRoot.mat[,2],
                          max=DRoot.mat[,3])
     alpha.mode<-"uniform"
   }
   if(OU.alpha=="half-life"){
-    prior.alpha<-log(2)/runif(10*max.sample.size.prior,
+    prior.alpha<-log(2)/stats::runif(10*max.sample.size.prior,
                           min=0.03333333*DRoot.mat[,1],max=DRoot.mat[,1])
     alpha.mode<-"half-life"
   }
-  
+
   if(return.alpha.priors){
     prior.alpha.res <- prior.alpha
   } else{
     prior.alpha.res<- NULL
   }
-  
+
   if(occurrence){
     comm <- ifelse(comm > 0, yes = 1, no = 0)
   }
@@ -143,7 +144,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
     PDfaith <- picante::pd(comm, phylo)$PD #phylo diversity
     mntd <- picante::mntd(samp = comm, dis = cophenetic(phylo))
     PSV <- picante::psv(samp = comm, tree = phylo, compute.var = TRUE, scale.vcv = TRUE)$PSVs
-    DBPhylo <- FD::dbFD(x = cophenetic(phylo), a = comm[,match(rownames(cophenetic(phylo)), colnames(comm))], 
+    DBPhylo <- FD::dbFD(x = cophenetic(phylo), a = comm[,match(rownames(cophenetic(phylo)), colnames(comm))],
                     calc.FRic = F, w.abun = FALSE, calc.FDiv = TRUE, calc.CWM = FALSE, calc.FGR = FALSE) #phylogenetic db measures (Vill?ger)
     Peve <- DBPhylo$FEve
     Peve[which(is.na(Peve))] <- 0 #Phylogenetic evenness
@@ -167,7 +168,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   if(W.r.prior){
     dist.xy <- scales::rescale(dist(xy.coords,diag=T,upper=T),c(0,1))
     r <- max(dist.xy*as.dist(ape::mst(dist.xy),diag=T,upper=T))
-    dlk <- runif(n=max.sample.size.prior,min=0,max=1)
+    dlk <- stats::runif(n=max.sample.size.prior,min=0,max=1)
     prior.w <- round(-log(dlk)/(r^2),3)
   } else {
     prior.w <- 0
@@ -187,16 +188,16 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   spp.names<-colnames(comm)
   # define seeder for recruitment from regional species pool
   spp.freq<-ifelse(colSums(comm)>0,colSums(comm),50)
-  
+
   # initiating simulated metacommunity with MCSim -----------------------------
-  capture.output({my.landscape <- MCSim::make.landscape(site.coords = xy.coords, 
+  capture.output({my.landscape <- MCSim::make.landscape(site.coords = xy.coords,
                                         Ef = envir,
-                                        m = m, 
-                                        JM = JM, 
+                                        m = m,
+                                        JM = JM,
                                         JL = JL)}) # landscape for metacommunity
                                                       #simulation
   print("I can guess you guys aren't ready for that yet...")
-  # makeCluster  
+  # makeCluster
   newClusters <- FALSE
   if (is.numeric(parallel)) {
     if(!parallel%%1==0){
@@ -207,15 +208,15 @@ mcfly <- function(comm, phylo, envir, xy.coords,
     newClusters <- TRUE
   }
   if (!inherits(parallel, "cluster")) {
-    RES <- f.internal(k = 0, 
+    RES <- f.internal(k = 0,
                       sample.size.posterior = sample.size.posterior,
                       max.sample.size.prior = max.sample.size.prior,
-                      prior.alpha = prior.alpha, 
-                      prior.w = prior.w, 
-                      theta.val = theta.val, 
-                      phylo = phylo, 
-                      niche.sigma = niche.sigma, 
-                      root.value = root.value, 
+                      prior.alpha = prior.alpha,
+                      prior.w = prior.w,
+                      theta.val = theta.val,
+                      phylo = phylo,
+                      niche.sigma = niche.sigma,
+                      root.value = root.value,
                       my.landscape = my.landscape,
                       spp.freq = spp.freq,
                       JM = JM,
@@ -232,28 +233,28 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                       scenario.ID=scenario.ID,
                       output.dir.path = output.dir.path)
     # Total sample size
-    # If NA in the last position total.sample.size is equal to 
+    # If NA in the last position total.sample.size is equal to
     #sample.size.posterior
     total.sample.size <- sapply(RES, function(x) ifelse(is.null(x), NA,
                                       x$sample.size))[sample.size.posterior]
-    total.sample.size <- ifelse(is.na(total.sample.size), 
+    total.sample.size <- ifelse(is.na(total.sample.size),
                         yes = max.sample.size.prior, no = total.sample.size)
   }
   else {
-    # Recalculate the sample.size.posterior and max.sample.size.prior to 
+    # Recalculate the sample.size.posterior and max.sample.size.prior to
     #redistribute between clusters
     sample.size.posterior <- ceiling(sample.size.posterior/n.cluster)
     max.sample.size.prior <- ceiling(max.sample.size.prior/n.cluster)
-    RES <- parallel::parLapply(parallel, seq_len(n.cluster), fun = f.internal, 
+    RES <- parallel::parLapply(parallel, seq_len(n.cluster), fun = f.internal,
                                sample.size.posterior = sample.size.posterior,
                                max.sample.size.prior = max.sample.size.prior,
-                               prior.alpha = prior.alpha, 
-                               prior.w = prior.w, 
-                               theta.val = theta.val, 
-                               phylo = phylo, 
-                               niche.sigma = niche.sigma, 
-                               root.value = root.value, 
-                               my.landscape = my.landscape, 
+                               prior.alpha = prior.alpha,
+                               prior.w = prior.w,
+                               theta.val = theta.val,
+                               phylo = phylo,
+                               niche.sigma = niche.sigma,
+                               root.value = root.value,
+                               my.landscape = my.landscape,
                                JM = JM,
                                n.timestep = n.timestep,
                                spp.freq = spp.freq,
@@ -272,7 +273,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
     # Total sample size
     # If NA in each last position total.sample.size is equal to
     #sample.size.posterior
-    last.set <- seq.int(from = sample.size.posterior, to = 
+    last.set <- seq.int(from = sample.size.posterior, to =
                   sample.size.posterior*n.cluster, by = sample.size.posterior)
     total.sample.size <- sapply(RES, function(x) ifelse(is.null(x), NA,
                                                   x$sample.size))[last.set]
@@ -345,9 +346,9 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                    Theta = theta.simul.ent,
                    K_niche = k.niche.simul,
                    Summary.Statistics = cor.posterior.ent,
-                   Alpha_Posterior_Distribution = posterior.dist.alpha, 
-                   HPD_Alpha = HPD.alpha, 
-                   W_Posterior_Distribution = posterior.dist.w, 
+                   Alpha_Posterior_Distribution = posterior.dist.alpha,
+                   HPD_Alpha = HPD.alpha,
+                   W_Posterior_Distribution = posterior.dist.w,
                    HPD_w = HPD.w
                    )
   print("...but your kids are gonna love it!!!")

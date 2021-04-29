@@ -1,68 +1,16 @@
 Package: mcfly
-Title: Model based simulation approach to estimate the influence of stabilizing selection on metacommunity structure
-Version: 1.0.2
-Author: c(
-            person(given = "Gabriel",
-           family = "Nakamura",
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "First",
+           family = "Last",
            role = c("aut", "cre"),
-           email = "gabriel.nakamura.souza@gmail.com",
-           comment = c(ORCID = "0000-0002-5144-5312")
-                  ),
-           person(given = "Leandro",
-           family = "Duarte",
-           role = "aut",
-           email = "duarte.ldas@gmail.com",
-           comment = c(ORCID = "0000-0002-5144-5312")
-                  ),
-           person(given = "Vanderlei",
-           family = "Debastiani",
-           role = "aut"
-                  ),
-            person(given = "Marcus",
-           family = "Cianciaruso",
-           role = "ctb"
-                  ),
-          person(given = "José",
-           family = "Felizola Diniz-Filho",
-           role = "ctb"
-                  )
-           )
-Description: We introduce mcfly, an R package to perform evolutionary model-based simulation approach that allows
-    to estimate the influence of stabilizing selection on niche-based species sorting of a given lineage
-    distributed across sets of local communities (a metacommunity).
-    mcfly package use an ABC (Aproximate Bayesian Computation) coupled with an individual based simulation model algorithm to infer the force of evolutionary 
-    stabilizing selection that present the most prabability to
-    generate the diversity gradient observed in the metacommunity analized. The simulation producedure is made through the use of MCSim functions.
-    See MCSim package for more information on individual based model.
-License: MIT + file LICENSE
-Maintainer: Gabriel Nakamura <gabriel.nakamura.souza@gmail.com>
+           email = "first.last@example.com",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: What the package does (one paragraph).
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.0
-Imports: 
-    ape,
-    FD,
-    geiger,
-    HDInterval,
-    MCSim,
-    parallel,
-    picante,
-    reshape2,
-    scales,
-    stats,
-    vegan
-Sugests:
-Depends: 
-    R (>= 2.10)
-Suggests: 
-    knitr,
-    rmarkdown
-VignetteBuilder: knitr
-Collate: 
-    'data.R'
-    'function_ImportanceVal_V2_internal_mcfly.R'
-    'function_dimensionality_internal_mcfly.R'
-    'global.R'
-    'mcfly.R'
-    'mcfly_RUN_internal.R'
+RoxygenNote: 7.1.1
