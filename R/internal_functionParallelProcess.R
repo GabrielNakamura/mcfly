@@ -1,36 +1,33 @@
-#'  
-#' 
-#' 
-#' 
-#' @importFrom stats cophenetic hclust cor
-#' @param k only for parallel computation
-#' @param sample.size.posterior size of posterior distribution
-#' @param max.sample.size.prior maximum sample size for prior distribution
-#' @param prior.alpha type of prior alpha, the same as in mcfly
-#' @param prior.w type of prior w
-#' @param theta.val theta
-#' @param phylo phylogenetic tree in newick format
-#' @param niche.sigma sigma
-#' @param root.value root value
-#' @param my.landscape simulated landscape
-#' @param JM JM parameter, the same accepted by \code{\link{metasim}}
-#' @param n.timestep number of timesteps for metacommunity simulation
-#' @param spp.freq species frequency
-#' @param niche.breadth niche breadth
-#' @param occurrence if occurence or abundance
-#' @param spp.names species names
-#' @param names.comm communities names
-#' @param entropy.order entropy order for Rényi series
-#' @param summary.stat type of summary statistic
-#' @param div diversity 
-#' @param tol tolerance value
-#' @param return.comm logical
-#' @param scenario.ID name of simulation scenario
-#' @param output.dir.path name of output directory
+#' Title Internal function to be used in parallel process within mcfly
 #'
-#' @rdname mcfly
-#' @include mcfly.R
-#' @encoding UTF-8
+#' @param k 
+#' @param sample.size.posterior 
+#' @param max.sample.size.prior 
+#' @param prior.alpha 
+#' @param prior.w 
+#' @param theta.val 
+#' @param phylo 
+#' @param niche.sigma 
+#' @param root.value 
+#' @param my.landscape 
+#' @param JM 
+#' @param n.timestep 
+#' @param spp.freq 
+#' @param niche.breadth 
+#' @param occurrence 
+#' @param spp.names 
+#' @param names.comm 
+#' @param entropy.order 
+#' @param summary.stat 
+#' @param div 
+#' @param tol 
+#' @param return.comm 
+#' @param scenario.ID 
+#' @param output.dir.path 
+#'
+#' @return
+#' 
+#' 
 f.internal <- function(k, 
                        sample.size.posterior,
                        max.sample.size.prior,
@@ -53,20 +50,18 @@ f.internal <- function(k,
                        div,
                        tol,
                        return.comm,
-                       return.w.priors,
-                       return.alpha.priors,
                        scenario.ID,
                        output.dir.path){
   # List of results
   RES <- vector("list", sample.size.posterior)
-  scenario.ID <- paste(scenario.ID, k, sep=".")
-  output.dir.path <- paste(output.dir.path, k, sep = ".")
+  scenario.ID=paste(scenario.ID,k,sep=".")
+  output.dir.path<-paste(output.dir.path,k,sep = ".")
   # number of values in posterior distribution
   cont.size.ent <- 0  
   total.sample.size <- 0
   for(i in 1:max.sample.size.prior){
-    sim.ID <- paste(scenario.ID, i, sep= ".")
-    total.sample.size <- total.sample.size + 1
+    sim.ID<-paste(scenario.ID,i,sep=".")
+    total.sample.size <- total.sample.size+1
     # sampling alpha value
     alpha.sim <- sample(x = prior.alpha, size = 1) 
     # sampling W.r value
@@ -77,7 +72,7 @@ f.internal <- function(k,
                              sigma = niche.sigma, theta = theta.sim, root.value = root.value)
     # trait parameters and niche position----------
     k.niche <- as.numeric(picante::Kcalc(niche, phylo))
-    niche.pos<- niche[spp.names]
+    niche.pos<-niche[spp.names]
     sim <- MCSim::metasim(landscape = my.landscape, nu = 0,
                           speciation.limit = 0, JM.limit = JM,
                           n.timestep = n.timestep, 
@@ -113,9 +108,9 @@ f.internal <- function(k,
       mntd_sim <- picante::mntd(samp = comm, dis = cophenetic(phylo))
       PSV_sim <- picante::psv(samp = comm, tree = phylo, compute.var = TRUE, scale.vcv = TRUE)$PSVs
       DBPhylo_sim <- FD::dbFD(x = cophenetic(phylo), a = comm[,match(rownames(cophenetic(phylo)), colnames(comm))], 
-                              calc.FRic = F, w.abun = FALSE, calc.FDiv = TRUE, calc.CWM = FALSE, calc.FGR = FALSE) 
+                              calc.FRic = F, w.abun = FALSE, calc.FDiv = TRUE, calc.CWM = FALSE, calc.FGR = FALSE) #phylogenetic db measures (Vill?ger)
       Peve_sim <- DBPhylo_sim$FEve
-      Peve_sim[which(is.na(Peve_sim))] <- 0 
+      Peve_sim[which(is.na(Peve_sim))] <- 0 #Phylogenetic evenness
       # functional metrics
       distrait_sim <- vegan::vegdist(niche.pos, method = "euclidean")
       funct_dendro_sim <- ape::as.phylo(hclust(distrait_sim, method = "average"))
@@ -144,12 +139,6 @@ f.internal <- function(k,
       cont.size.ent <- cont.size.ent + 1
       if(return.comm){
         RES[[cont.size.ent]]$comm.sim <- comm.sim
-      }
-      if(return.alpha.priors == T){
-        RES[[cont.size.ent]]$alpha.prior <- alpha.sim
-      }
-      if(return.w.priors == TRUE){
-        RES[[cont.size.ent]]$w.r.prior <- W.r.sim
       }
       RES[[cont.size.ent]]$w.simul.ent <- W.r.sim
       RES[[cont.size.ent]]$alpha.simul.ent <- alpha.sim

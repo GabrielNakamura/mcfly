@@ -160,7 +160,7 @@ define_tol <- function(comm.obs.meta,
                     output.dir.path = output.dir.path.2)
     tol.i <- 1 - quantile(training$Summary.Statistics, probs = 0.99)
     output.dir.path.3 <- paste("delorean", output.dir.path.1, sep = ".")
-    test<-mcfly(comm = comm.obs.meta,
+    test <- mcfly(comm = comm.obs.meta,
                 phylo = phylo.meta,
                 envir = envir,
                 xy.coords = xy.coords,
@@ -171,13 +171,13 @@ define_tol <- function(comm.obs.meta,
                 max.sample.size.prior = max.sample.size.prior,
                 sample.size.posterior = sample.size.posterior,
                 parallel = parallel,
-                output.dir.path=output.dir.path.3)
-    sum.res[i,1]<-test$Sample_Attributes[2,]
-    sum.res[i,2]<-test$Sample_Attributes[4,]
-    sum.res[i,3]<-min.alpha
-    sum.res[i,4]<-max.alpha
-    sum.res[i,5]<-tol.i
-    sum.res[i,7]<-alpha.meta
+                output.dir.path = output.dir.path.3)
+    sum.res[i,1] <- test$Sample_Attributes[2,]
+    sum.res[i,2] <- test$Sample_Attributes[4,]
+    sum.res[i,3] <- min.alpha
+    sum.res[i,4] <- max.alpha
+    sum.res[i,5] <- tol.i
+    sum.res[i,7] <- alpha.meta
   }
   
   return(sum.res)
