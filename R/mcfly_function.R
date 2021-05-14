@@ -50,7 +50,6 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                      OU.alpha=c("uniform","half-life"),
                      W.r.prior = FALSE,
                      summary.stat = "correlation",
-                     tol = 0.2,
                      sample.size.posterior = 240, max.sample.size.prior = 2400,
                      HPD = 0.9,
                      return.comm = FALSE,
@@ -70,9 +69,6 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   if (sample.size.posterior > max.sample.size.prior) {
     stop("\n max.sample.size.prior must be equal or higher than
          sample.size.posterior")
-  }
-  if (tol < 0 | tol>1) {
-    stop("\n tol must vary between 0 and 1")
   }
   if (HPD < 0 | HPD>1) {
     stop("\n HPD must vary between 0 and 1")
@@ -130,7 +126,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
     if(ncol(envir)>1){
       stop("envir must have only one column")
     }
-    names.envir <- rownames(env)
+    names.envir <- rownames(envir)
     envir <- envir[, 1, drop = TRUE]
     names(envir) <- names.envir
   }
@@ -197,6 +193,11 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                                         JL = JL)}) # landscape for metacommunity
                                                       #simulation
   print("I can guess you guys aren't ready for that yet...")
+  tol <- define_tolerance(comm = comm,
+                   phylo = phylo,
+                   xy.coords = xy.coords,
+                   occurrence = occurrence,
+                   entropy.order = entropy.order, W.r.prior = W.r.prior)
   # makeCluster
   newClusters <- FALSE
   if (is.numeric(parallel)) {
