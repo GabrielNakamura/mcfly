@@ -1,31 +1,31 @@
 #' Internal auxiliar function to parallel process in mcfly
 #'
-#' @param k
-#' @param sample.size.posterior
-#' @param max.sample.size.prior
-#' @param prior.alpha
-#' @param prior.w
-#' @param theta.val
-#' @param phylo
-#' @param niche.sigma
-#' @param root.value
-#' @param my.landscape
-#' @param JM
-#' @param n.timestep
-#' @param spp.freq
-#' @param niche.breadth
-#' @param occurrence
-#' @param spp.names
-#' @param names.comm
-#' @param entropy.order
-#' @param summary.stat
-#' @param div
-#' @param tol
-#' @param return.comm
-#' @param scenario.ID
-#' @param output.dir.path
+#' @param k numeric, auxiliar parameter to paralell proccess
+#' @param sample.size.posterior numeric indicating the size of posterior distribution
+#' @param max.sample.size.prior numeric indicating the sie of prior distribution
+#' @param prior.alpha character indication the type of prior alpha same as mcfly
+#' @param prior.w logical indicating if the w must be estimated
+#' @param theta.val numeric theta value
+#' @param phylo phylogeny
+#' @param niche.sigma numeric indicating the sigma for nich
+#' @param root.value numeric indicating the mean value of traits
+#' @param my.landscape landscape
+#' @param JM total number of individuals in simulation process
+#' @param n.timestep number of timesteps in simulation process
+#' @param spp.freq frequency of species
+#' @param niche.breadth numeric indicating the niche breath of species
+#' @param occurrence logical
+#' @param spp.names names of species
+#' @param names.comm names for communities
+#' @param entropy.order diversity value accordingly to entropy order
+#' @param summary.stat summary statistic to be used (correlation)
+#' @param div diversity value
+#' @param tol tolerance value
+#' @param return.comm logical
+#' @param scenario.ID character
+#' @param output.dir.path character
 #'
-#' @return
+#' @return list with results to be used in mcfly function
 #' @import stats
 #'
 #' @examples
@@ -103,40 +103,6 @@ f.internal <- function(k,
         tol.sim.obs.ent <- 1
       }
     }
-
-    # summary statistic dimensionality (IV) -------
-    if(summary.stat == 2){
-      # calculating diversity metrics
-      # phylo metrics
-      PDfaith_sim <-picante::pd(comm, phylo)$PD #phylo diversity
-      mntd_sim <- picante::mntd(samp = comm, dis = cophenetic(phylo))
-      PSV_sim <- picante::psv(samp = comm, tree = phylo, compute.var = TRUE, scale.vcv = TRUE)$PSVs
-      DBPhylo_sim <- FD::dbFD(x = cophenetic(phylo), a = comm[,match(rownames(cophenetic(phylo)), colnames(comm))],
-                              calc.FRic = F, w.abun = FALSE, calc.FDiv = TRUE, calc.CWM = FALSE, calc.FGR = FALSE) #phylogenetic db measures (Vill?ger)
-      Peve_sim <- DBPhylo_sim$FEve
-      Peve_sim[which(is.na(Peve_sim))] <- 0 #Phylogenetic evenness
-      # functional metrics
-      distrait_sim <- vegan::vegdist(niche.pos, method = "euclidean")
-      funct_dendro_sim <- ape::as.phylo(hclust(distrait_sim, method = "average"))
-      FDfaith_sim <- picante::pd(comm, funct_dendro_sim)$PD #func diversity
-      FEve_sim[which(is.na(FEve_sim))] <- 0
-      FDiv_sim <- DBFunc_sim$FDiv #Functional divergence
-      FDiv_sim[which(is.na(FDiv_sim))]<- 0
-      # taxonomic metric
-      rich <- rowSums(comm)
-      # matrix M
-      matrix_Msim <- as.matrix(data.frame(PDfaith_sim, mntd_sim, PSV_sim, Peve_sim, FDfaith_sim, FEve_sim, FDiv_sim, richness= rich_sim))
-      IVs_sim_res <- ImportanceVal(matrix.M = matrix_Msim, scale = TRUE, method = "max", stopRule = TRUE)
-      IVs_sim<- IVs_sim_res$IV.obs_stopRule
-      cor_IV <- cor(IVs_sim, IVs_obs)
-      tol_sim_obs_ent <- 1 - abs(cor_IV) # tolerance value of ABC
-      if(is.na(tol_sim_obs_ent)){
-        tol_sim_obs_ent <- 1
-      }
-    }
-
-    # summary statistic dimensionality ----
-
 
     # posterior distribution-----
     if(tol.sim.obs.ent <= tol){

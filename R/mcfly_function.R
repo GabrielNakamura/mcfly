@@ -39,6 +39,7 @@
 #' @param scenario.ID Character indicating the name of the simulation scenario. The same as used in \code{\link{metasim}}. Default is "mcfly".
 #' @param output.dir.path Character indicating the name of directory to save simulations results and metadata used in \code{\link{metasim}}. Default is "delorean".
 #'
+#' @import stats
 #'
 #' @return
 #' @export
@@ -102,12 +103,12 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   DRoot.mat[,2]<-log(2)/(DRoot.mat[,1])
   DRoot.mat[,3]<-log(2)/(0.03333333*DRoot.mat[,1])
   if(OU.alpha=="uniform"){
-    prior.alpha <- stats::runif(10*max.sample.size.prior, min = DRoot.mat[,2],
+    prior.alpha <- runif(10*max.sample.size.prior, min = DRoot.mat[,2],
                          max=DRoot.mat[,3])
     alpha.mode<-"uniform"
   }
   if(OU.alpha=="half-life"){
-    prior.alpha<-log(2)/stats::runif(10*max.sample.size.prior,
+    prior.alpha<-log(2)/runif(10*max.sample.size.prior,
                           min=0.03333333*DRoot.mat[,1],max=DRoot.mat[,1])
     alpha.mode<-"half-life"
   }
@@ -145,7 +146,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   if(W.r.prior){
     dist.xy <- scales::rescale(dist(xy.coords,diag=T,upper=T),c(0,1))
     r <- max(dist.xy*as.dist(ape::mst(dist.xy),diag=T,upper=T))
-    dlk <- stats::runif(n=max.sample.size.prior,min=0,max=1)
+    dlk <- runif(n=max.sample.size.prior,min=0,max=1)
     prior.w <- round(-log(dlk)/(r^2),3)
   } else {
     prior.w <- 0
@@ -167,7 +168,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   spp.freq<-ifelse(colSums(comm)>0,colSums(comm),50)
 
   # initiating simulated metacommunity with MCSim -----------------------------
-  capture.output({my.landscape <- MCSim::make.landscape(site.coords = xy.coords,
+  utils::capture.output({my.landscape <- MCSim::make.landscape(site.coords = xy.coords,
                                         Ef = envir,
                                         m = m,
                                         JM = JM,
@@ -272,6 +273,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   # Organize results
   if(return.comm){
     COMM.sim <- lapply(RES, function(x) if(is.null(x)) NULL else x$comm.sim)
+    COMM.sim <- COMM.sim[unlist(lapply(COMM.sim, function(x) !is.null(x)))]
   } else{
     COMM.sim <- NULL
   }

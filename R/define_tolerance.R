@@ -14,7 +14,6 @@
 #'     as the correlation between the diversity values calculated according to the Rényi scale defined in entropy.order argument.
 #' @param OU.alpha Character indicating the type of prior that will be used in ABC model. The options were "uniform" for a uniform sample of
 #'     alpha values and "half-life" for a prior of alpha values represented as being half-life values, calculated as being log().
-#' @param max.sample.size.priorNumeric value that defines the maximum size of the posterior distribution. Default is 2400.
 #' @param sample.size.posterior Numeric value that defines the minimum size of the posterior distribution. Default is 240.
 #' @param parallel Numerical value indicating the numbers of cores that must be used in the parallel computation. Default is NULL, indicating that the
 #'     calculations of ABC model will not be parallelized.
@@ -22,6 +21,8 @@
 #' @param output.dir.path Character indicating the name of directory to save simulations results and metadata used in \code{\link{metasim}}. Default is "einstein".
 #' @param probs Numeric indicating the quantiles to be used in tolerance distribution values.
 #'     Default is c(0.8,0.9,0.95,0.99)
+#' @param max.sample.size.prior Numeric indicating the maximum number of sampling in prior distribution.
+#'     Default is 100 times the number of parallel process.
 #'
 #' @return
 #' @export

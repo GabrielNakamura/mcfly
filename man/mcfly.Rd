@@ -18,8 +18,8 @@ mcfly(
   W.r.prior = FALSE,
   summary.stat = "correlation",
   tol = 0.2,
-  sample.size.posterior = 50,
-  max.sample.size.prior = 100,
+  sample.size.posterior = 240,
+  max.sample.size.prior = 2400,
   HPD = 0.9,
   return.comm = FALSE,
   return.w.priors = FALSE,
@@ -57,7 +57,8 @@ or follow a prior distribution (TRUE) of values calculated as being the slopes o
 to the local immigrant pool.}
 
 \item{summary.stat}{Character indicating the type of summary statistic that will be used in ABC model. Default is "correlation", that is calculated
-as the correlation between the diversity values calculated according to the Rényi scale defined in entropy.order argument.}
+as the correlation between the diversity values calculated according to the Rényi scale defined in entropy.order argument. Another option is "dimensionality"
+but it is not implemented yet.}
 
 \item{tol}{Numeric value that defines the tolerance value (calculated as 1 - correlation) used in ABC model to assemble the posterior distribution. Default is 0.2.}
 

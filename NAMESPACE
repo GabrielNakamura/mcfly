@@ -2,3 +2,4 @@
 
 export(define_tolerance)
 export(mcfly)
+import(stats)
