@@ -42,6 +42,7 @@
 #' @return
 #' @export
 #'
+#
 mcfly <- function(comm, phylo, envir, xy.coords,
                      occurrence = TRUE, entropy.order = 1,
                      niche.breadth = 10,
@@ -51,11 +52,11 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                      W.r.prior = FALSE,
                      summary.stat = "correlation",
                      tol = 0.2,
-                     sample.size.posterior = 240, max.sample.size.prior = 2400,
+                     sample.size.posterior = 50, max.sample.size.prior = 100,
                      HPD = 0.9,
                      return.comm = FALSE,
                      return.w.priors = FALSE,
-                     return.alpha.priors = FALSE,
+                     return.alpha.priors = TRUE,
                      parallel = NULL,
                      scenario.ID="mcfly",
                      output.dir.path = "delorean"){
@@ -235,6 +236,8 @@ mcfly <- function(comm, phylo, envir, xy.coords,
     # Total sample size
     # If NA in the last position total.sample.size is equal to
     #sample.size.posterior
+    RES_prior <- RES$prior # priors
+    RES <- RES$posterior # posteriors
     total.sample.size <- sapply(RES, function(x) ifelse(is.null(x), NA,
                                       x$sample.size))[sample.size.posterior]
     total.sample.size <- ifelse(is.na(total.sample.size),
@@ -269,7 +272,10 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                                return.comm = return.comm,
                                scenario.ID=scenario.ID,
                                output.dir.path = output.dir.path)
-    RES <- unlist(RES, recursive = FALSE)
+    RES_prior <- do.call(rbind, lapply(RES, function(x) x$prior))
+    RES <- unlist(lapply(RES, function(x) x$posterior),
+                                recursive = FALSE)
+
     # Total sample size
     # If NA in each last position total.sample.size is equal to
     #sample.size.posterior
@@ -341,8 +347,8 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                    Sample_Attributes = size.mat,
                    Alpha_Limits=DRoot.mat,
                    Alpha.prior.mode=alpha.mode,
-                   Alpha_Prior_Distribution = prior.alpha.res,
-                   W_Prior_Distribution = prior.w.res,
+                   Alpha_Prior_Distribution = RES_prior[, 1][!is.na(RES_prior[, 1])],
+                   W_Prior_Distribution = RES_prior[ , 2][!is.na(RES_prior[, 2])],
                    Theta = theta.simul.ent,
                    K_niche = k.niche.simul,
                    Summary.Statistics = cor.posterior.ent,
@@ -354,3 +360,4 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   print("...but your kids are gonna love it!!!")
   return(res.list)
 }
+
