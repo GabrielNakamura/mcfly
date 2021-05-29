@@ -17,12 +17,13 @@ mcfly(
   OU.alpha = c("uniform", "half-life"),
   W.r.prior = FALSE,
   summary.stat = "correlation",
-  sample.size.posterior = 240,
-  max.sample.size.prior = 2400,
+  tol = 0.2,
+  sample.size.posterior = 50,
+  max.sample.size.prior = 100,
   HPD = 0.9,
   return.comm = FALSE,
   return.w.priors = FALSE,
-  return.alpha.priors = FALSE,
+  return.alpha.priors = TRUE,
   parallel = NULL,
   scenario.ID = "mcfly",
   output.dir.path = "delorean"
@@ -58,6 +59,8 @@ to the local immigrant pool.}
 \item{summary.stat}{Character indicating the type of summary statistic that will be used in ABC model. Default is "correlation", that is calculated
 as the correlation between the diversity values calculated according to the Rényi scale defined in entropy.order argument.}
 
+\item{tol}{Numeric value that defines the tolerance value (calculated as 1 - correlation) used in ABC model to assemble the posterior distribution. Default is 0.2.}
+
 \item{sample.size.posterior}{Numeric value that defines the minimum size of the posterior distribution. Default is 240.}
 
 \item{max.sample.size.prior}{Numeric value that defines the maximum size of the posterior distribution. Default is 2400.}
@@ -78,8 +81,6 @@ calculations of ABC model will not be parallelized.}
 \item{scenario.ID}{Character indicating the name of the simulation scenario. The same as used in \code{\link{metasim}}. Default is "mcfly".}
 
 \item{output.dir.path}{Character indicating the name of directory to save simulations results and metadata used in \code{\link{metasim}}. Default is "delorean".}
-
-\item{tol}{Numeric value that defines the tolerance value (calculated as 1 - correlation) used in ABC model to assemble the posterior distribution. Default is 0.2.}
 }
 \value{
 
