@@ -1,43 +1,13 @@
-#' Title Internal function to be used in parallel process within mcfly
-#'
-#' @param k 
-#' @param sample.size.posterior 
-#' @param max.sample.size.prior 
-#' @param prior.alpha 
-#' @param prior.w 
-#' @param theta.val 
-#' @param phylo 
-#' @param niche.sigma 
-#' @param root.value 
-#' @param my.landscape 
-#' @param JM 
-#' @param n.timestep 
-#' @param spp.freq 
-#' @param niche.breadth 
-#' @param occurrence 
-#' @param spp.names 
-#' @param names.comm 
-#' @param entropy.order 
-#' @param summary.stat 
-#' @param div 
-#' @param tol 
-#' @param return.comm 
-#' @param scenario.ID 
-#' @param output.dir.path 
-#'
-#' @return
-#' 
-#' 
-f.internal <- function(k, 
+f.internal <- function(k,
                        sample.size.posterior,
                        max.sample.size.prior,
-                       prior.alpha, 
-                       prior.w, 
-                       theta.val, 
-                       phylo, 
-                       niche.sigma, 
+                       prior.alpha,
+                       prior.w,
+                       theta.val,
+                       phylo,
+                       niche.sigma,
                        root.value,
-                       my.landscape, 
+                       my.landscape,
                        JM,
                        n.timestep,
                        spp.freq,
@@ -57,17 +27,20 @@ f.internal <- function(k,
   scenario.ID=paste(scenario.ID,k,sep=".")
   output.dir.path<-paste(output.dir.path,k,sep = ".")
   # number of values in posterior distribution
-  cont.size.ent <- 0  
+  cont.size.ent <- 0
   total.sample.size <- 0
+  RES.prior <- matrix(NA, nrow =  max.sample.size.prior, ncol = 2)
   for(i in 1:max.sample.size.prior){
     sim.ID<-paste(scenario.ID,i,sep=".")
     total.sample.size <- total.sample.size+1
     # sampling alpha value
-    alpha.sim <- sample(x = prior.alpha, size = 1) 
+    alpha.sim <- sample(x = prior.alpha, size = 1)
     # sampling W.r value
-    W.r.sim <- sample(x = prior.w, size = 1) 
+    W.r.sim <- sample(x = prior.w, size = 1)
+    RES.prior[i, 1] <- alpha.sim
+    RES.prior[i, 2] <- W.r.sim
     # sampling theta
-    theta.sim <- sample(x = theta.val, size = 1) 
+    theta.sim <- sample(x = theta.val, size = 1)
     niche <- ape::rTraitCont(phy = phylo, model= "OU", alpha = alpha.sim,
                              sigma = niche.sigma, theta = theta.sim, root.value = root.value)
     # trait parameters and niche position----------
@@ -75,9 +48,9 @@ f.internal <- function(k,
     niche.pos<-niche[spp.names]
     sim <- MCSim::metasim(landscape = my.landscape, nu = 0,
                           speciation.limit = 0, JM.limit = JM,
-                          n.timestep = n.timestep, 
-                          W.r = W.r.sim, save.sim = FALSE, trait.Ef = niche.pos, 
-                          trait.Ef.sd = niche.breadth, gamma.abund = spp.freq, 
+                          n.timestep = n.timestep,
+                          W.r = W.r.sim, save.sim = FALSE, trait.Ef = niche.pos,
+                          trait.Ef.sd = niche.breadth, gamma.abund = spp.freq,
                           taxa.list = spp.names,scenario.ID=scenario.ID,sim.ID=sim.ID,output.dir.path=output.dir.path)
     comm.out <- sim$J.long
     comm.frame <- comm.out[which(comm.out[,1]==n.timestep),]
@@ -99,15 +72,15 @@ f.internal <- function(k,
         tol.sim.obs.ent <- 1
       }
     }
-    
+
     # summary statistic dimensionality (IV) -------
     if(summary.stat == 2){
-      # calculating diversity metrics 
+      # calculating diversity metrics
       # phylo metrics
       PDfaith_sim <-picante::pd(comm, phylo)$PD #phylo diversity
       mntd_sim <- picante::mntd(samp = comm, dis = cophenetic(phylo))
       PSV_sim <- picante::psv(samp = comm, tree = phylo, compute.var = TRUE, scale.vcv = TRUE)$PSVs
-      DBPhylo_sim <- FD::dbFD(x = cophenetic(phylo), a = comm[,match(rownames(cophenetic(phylo)), colnames(comm))], 
+      DBPhylo_sim <- FD::dbFD(x = cophenetic(phylo), a = comm[,match(rownames(cophenetic(phylo)), colnames(comm))],
                               calc.FRic = F, w.abun = FALSE, calc.FDiv = TRUE, calc.CWM = FALSE, calc.FGR = FALSE) #phylogenetic db measures (Vill?ger)
       Peve_sim <- DBPhylo_sim$FEve
       Peve_sim[which(is.na(Peve_sim))] <- 0 #Phylogenetic evenness
@@ -130,10 +103,10 @@ f.internal <- function(k,
         tol_sim_obs_ent <- 1
       }
     }
-    
+
     # summary statistic dimensionality ----
-    
-    
+
+
     # posterior distribution-----
     if(tol.sim.obs.ent <= tol){
       cont.size.ent <- cont.size.ent + 1
@@ -146,10 +119,14 @@ f.internal <- function(k,
       RES[[cont.size.ent]]$cor.posterior.ent <- cor.obs.simul.ent
       RES[[cont.size.ent]]$k.niche.simul <- k.niche
       RES[[cont.size.ent]]$sample.size <- total.sample.size
-    } 
+    }
     if(cont.size.ent == sample.size.posterior){
       break
     }
   }
-  return(RES)
+  list_res <- vector(mode = "list", length = 2)
+  list_res[[1]] <- RES
+  list_res[[2]] <- RES.prior
+  names(list_res) <- c("posterior", "prior")
+  return(list_res)
 }
