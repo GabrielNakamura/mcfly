@@ -23,7 +23,8 @@
 #'     or follow a prior distribution (TRUE) of values calculated as being the slopes of dispersal kernel indicating the contribution of species from neighboring patches
 #'     to the local immigrant pool.
 #' @param summary.stat Character indicating the type of summary statistic that will be used in ABC model. Default is "correlation", that is calculated
-#'     as the correlation between the diversity values calculated according to the Rényi scale defined in entropy.order argument.
+#'     as the correlation between the diversity values calculated according to the Rényi scale defined in entropy.order argument. Another option is "dimensionality"
+#'     but it is not implemented yet.
 #' @param tol Numeric value that defines the tolerance value (calculated as 1 - correlation) used in ABC model to assemble the posterior distribution. Default is 0.2.
 #' @param sample.size.posterior Numeric value that defines the minimum size of the posterior distribution. Default is 240.
 #' @param max.sample.size.prior Numeric value that defines the maximum size of the posterior distribution. Default is 2400.
@@ -52,7 +53,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                      W.r.prior = FALSE,
                      summary.stat = "correlation",
                      tol = 0.2,
-                     sample.size.posterior = 50, max.sample.size.prior = 100,
+                     sample.size.posterior = 240, max.sample.size.prior = 2400,
                      HPD = 0.9,
                      return.comm = FALSE,
                      return.w.priors = FALSE,
@@ -139,32 +140,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   root.value <- mean(envir)
   niche.sigma<-sqrt(sd(envir))
   theta.val <- as.numeric(envir[which(div >= quantile(x=div, probs=0.95))])
-  # calculating observed dimensionality
-  # phylo metrics
-  if(summary.stat == 2){
-    PDfaith <- picante::pd(comm, phylo)$PD #phylo diversity
-    mntd <- picante::mntd(samp = comm, dis = cophenetic(phylo))
-    PSV <- picante::psv(samp = comm, tree = phylo, compute.var = TRUE, scale.vcv = TRUE)$PSVs
-    DBPhylo <- FD::dbFD(x = cophenetic(phylo), a = comm[,match(rownames(cophenetic(phylo)), colnames(comm))],
-                    calc.FRic = F, w.abun = FALSE, calc.FDiv = TRUE, calc.CWM = FALSE, calc.FGR = FALSE) #phylogenetic db measures (Vill?ger)
-    Peve <- DBPhylo$FEve
-    Peve[which(is.na(Peve))] <- 0 #Phylogenetic evenness
-    # functional metrics
-    distrait <- vegan::vegdist(niche.pos, method = "euclidean")
-    funct_dendro <- ape::as.phylo(hclust(distrait, method = "average"))
-    FDfaith <- picante::pd(comm, funct_dendro)$PD #func diversity
-    DBFunc <- FD::dbFD(x = distrait, a = comm, calc.FRic = F, w.abun = FALSE, calc.FDiv = TRUE, calc.CWM = FALSE, calc.FGR = FALSE)
-    FEve <- DBFunc$FEve #Functional evenness
-    FEve[which(is.na(FEve))]<- 0
-    FDiv <- DBFunc$FDiv #Functional divergence
-    FDiv[which(is.na(FDiv))]<- 0
-    # taxonomic metric
-    rich <- rowSums(comm)
-    # matrix M
-    matrix_Mobs <- as.matrix(data.frame(PDfaith, mntd, PSV, Peve, FDfaith, FEve, FDiv, richness= rich))
-    IVs_obs_res <- ImportanceVal(matrix.M = matrix_Mobs, scale = TRUE, method = "max", stopRule = TRUE)
-    IVs_obs <- IVs_obs_res$IV.obs_stopRule
-  }
+
   # Defines dispersal limitation
   if(W.r.prior){
     dist.xy <- scales::rescale(dist(xy.coords,diag=T,upper=T),c(0,1))
