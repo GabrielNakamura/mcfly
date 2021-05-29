@@ -1,3 +1,34 @@
+#' Internal auxiliar function to parallel process in mcfly
+#'
+#' @param k
+#' @param sample.size.posterior
+#' @param max.sample.size.prior
+#' @param prior.alpha
+#' @param prior.w
+#' @param theta.val
+#' @param phylo
+#' @param niche.sigma
+#' @param root.value
+#' @param my.landscape
+#' @param JM
+#' @param n.timestep
+#' @param spp.freq
+#' @param niche.breadth
+#' @param occurrence
+#' @param spp.names
+#' @param names.comm
+#' @param entropy.order
+#' @param summary.stat
+#' @param div
+#' @param tol
+#' @param return.comm
+#' @param scenario.ID
+#' @param output.dir.path
+#'
+#' @return
+#' @import stats
+#'
+#' @examples
 f.internal <- function(k,
                        sample.size.posterior,
                        max.sample.size.prior,
