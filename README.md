@@ -39,10 +39,10 @@ To run the vignette:
 
 # Next steps
 
-  - [ ] Corrigir Summary.stat -\> Distance. Corrigir tb o help
-  - [ ] Inserir data.frame com coordenadas espaciais, obs.entropy e
+  - [x] Corrigir Summary.stat -\> Distance. Corrigir tb o help
+  - [x] Inserir data.frame com coordenadas espaciais, obs.entropy e
     mean.sim.entropy no output
-  - [ ] Substituir Species.Pools por Data.Attributes, contendo
+  - [x] Substituir Species.Pools por Data.Attributes, contendo
     spp.phylogeny, spp.metacommunity, n.sites, max.dist.mst., tempo
     máximo da árvore (raiz tip)
   - [ ] calcular density functions e extrair valores

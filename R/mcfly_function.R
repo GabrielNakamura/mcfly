@@ -1,4 +1,4 @@
-#' Title Estimating the influence of stabilizing selection on species distribution
+#' Title Estimating the influence of stabilizing selection on species diversity
 #'
 #' @description mcfly function to estimate the influence of stabilizing niche selection on species diversity across environmental gradients
 #'
@@ -40,28 +40,33 @@
 #' @param output.dir.path Character indicating the name of directory to save simulations results and metadata used in \code{\link{metasim}}. Default is "delorean".
 #'
 #' @import stats
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 geom_histogram
+#' @importFrom ggplot2 geom_density
+#' @import patchwork
 #'
 #' @return
 #' @export
 #'
 #
 mcfly <- function(comm, phylo, envir, xy.coords,
-                     occurrence = TRUE, entropy.order = 1,
-                     niche.breadth = 10,
-                     m = 0.5,
-                     n.timestep = 50,
-                     OU.alpha=c("uniform","half-life"),
-                     W.r.prior = FALSE,
-                     summary.stat = "distance",
-                     tol = 0.2,
-                     sample.size.posterior = 240, max.sample.size.prior = 2400,
-                     HPD = 0.9,
-                     return.comm = FALSE,
-                     return.w.priors = FALSE,
-                     return.alpha.priors = TRUE,
-                     parallel = NULL,
-                     scenario.ID="mcfly",
-                     output.dir.path = "delorean"){
+                  occurrence = TRUE, entropy.order = 1,
+                  niche.breadth = 10,
+                  m = 0.5,
+                  n.timestep = 50,
+                  OU.alpha=c("uniform","half-life"),
+                  W.r.prior = FALSE,
+                  summary.stat = "distance",
+                  tol = 0.2,
+                  sample.size.posterior = 240, max.sample.size.prior = 2400,
+                  HPD = 0.9,
+                  return.comm = FALSE,
+                  return.w.priors = FALSE,
+                  return.alpha.priors = TRUE,
+                  plot.res = TRUE,
+                  parallel = NULL,
+                  scenario.ID="mcfly",
+                  output.dir.path = "delorean"){
   date.mat<-matrix(NA,2,1,dimnames=list(c("Started on","Finished on")," "))
   date.mat[1,] <- date()
   if(!sample.size.posterior%%1==0){
@@ -98,7 +103,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   }
   # forge alpha prior distribution
   DRoot.mat<-matrix(NA,1,3,dimnames=list("Value",c("Tree_age",
-                                      "Minimum_alpha","Maximum_alpha")))
+                                                   "Minimum_alpha","Maximum_alpha")))
   DRoot.mat[,1]<-max(phytools::nodeHeights(phylo))
   DRoot.mat[,2]<-log(2)/(DRoot.mat[,1])
   DRoot.mat[,3]<-log(2)/(0.03333333*DRoot.mat[,1])
@@ -109,7 +114,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   }
   if(OU.alpha=="half-life"){
     prior.alpha<-log(2)/runif(10*max.sample.size.prior,
-                          min=0.03333333*DRoot.mat[,1],max=DRoot.mat[,1])
+                              min=0.03333333*DRoot.mat[,1],max=DRoot.mat[,1])
     alpha.mode<-"half-life"
   }
 
@@ -154,7 +159,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   if(return.w.priors){
     prior.w.res <- prior.w
   } else{
-     prior.w.res<- NULL
+    prior.w.res<- NULL
   }
   # define carrying capacity of sites
   if(occurrence){
@@ -169,11 +174,11 @@ mcfly <- function(comm, phylo, envir, xy.coords,
 
   # initiating simulated metacommunity with MCSim -----------------------------
   utils::capture.output({my.landscape <- MCSim::make.landscape(site.coords = xy.coords,
-                                        Ef = envir,
-                                        m = m,
-                                        JM = JM,
-                                        JL = JL)}) # landscape for metacommunity
-                                                      #simulation
+                                                               Ef = envir,
+                                                               m = m,
+                                                               JM = JM,
+                                                               JL = JL)}) # landscape for metacommunity
+  #simulation
   print("I can guess you guys aren't ready for that yet...")
   # makeCluster
   newClusters <- FALSE
@@ -217,9 +222,9 @@ mcfly <- function(comm, phylo, envir, xy.coords,
     RES <- RES$posterior # posteriors
     mean.sim.entropy <- RES$mean.sim.entropy
     total.sample.size <- sapply(RES, function(x) ifelse(is.null(x), NA,
-                                      x$sample.size))[sample.size.posterior]
+                                                        x$sample.size))[sample.size.posterior]
     total.sample.size <- ifelse(is.na(total.sample.size),
-                        yes = max.sample.size.prior, no = total.sample.size)
+                                yes = max.sample.size.prior, no = total.sample.size)
   }
   else {
     # Recalculate the sample.size.posterior and max.sample.size.prior to
@@ -252,17 +257,17 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                                output.dir.path = output.dir.path)
     RES_prior <- do.call(rbind, lapply(RES, function(x) x$prior))
     RES <- unlist(lapply(RES, function(x) x$posterior),
-                                recursive = FALSE)
+                  recursive = FALSE)
 
     # Total sample size
     # If NA in each last position total.sample.size is equal to
     #sample.size.posterior
     last.set <- seq.int(from = sample.size.posterior, to =
-                  sample.size.posterior*n.cluster, by = sample.size.posterior)
+                          sample.size.posterior*n.cluster, by = sample.size.posterior)
     total.sample.size <- sapply(RES, function(x) ifelse(is.null(x), NA,
-                                                  x$sample.size))[last.set]
+                                                        x$sample.size))[last.set]
     total.sample.size <- sum(ifelse(is.na(total.sample.size), yes =
-                                max.sample.size.prior, no = total.sample.size))
+                                      max.sample.size.prior, no = total.sample.size))
     # Calculate the effective sample.size.posterior and max.sample.size.prior
     sample.size.posterior <- sample.size.posterior*n.cluster
     max.sample.size.prior <- max.sample.size.prior*n.cluster
@@ -286,7 +291,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   cor.posterior.ent <- sapply(RES, function(x) ifelse(is.null(x), NA,
                                                       x$cor.posterior.ent))
   k.niche.simul <- sapply(RES, function(x) ifelse(is.null(x), NA,
-                                                        x$k.niche.simul))
+                                                  x$k.niche.simul))
   # Remove NA
   theta.simul.ent<-theta.simul.ent[!is.na(theta.simul.ent)]
   cor.posterior.ent<-cor.posterior.ent[!is.na(cor.posterior.ent)]
@@ -300,16 +305,16 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   n.tol <- sum(!is.na(alpha.simul.ent))
   if(n.tol>0){
     HPD.alpha <- HDInterval::hdi(object = posterior.dist.alpha, credMass =
-                                                      HPD, allowSplit=TRUE)
-      if(W.r.prior){
-        HPD.w <- HDInterval::hdi(object = posterior.dist.w, credMass = HPD,
-                                                            allowSplit=TRUE)
-      } else {HPD.w<-NA
-        }
+                                   HPD, allowSplit=TRUE)
+    if(W.r.prior){
+      HPD.w <- HDInterval::hdi(object = posterior.dist.w, credMass = HPD,
+                               allowSplit=TRUE)
+    } else {HPD.w<-NA
+    }
   } else {
     HPD.alpha <- NA
     HPD.w <- NA
-    }
+  }
   if(W.r.prior == TRUE){
     spp.mat <- matrix(NA, 5, 1,
                       dimnames = list(c("Spp.phylogeny", "Spp.metacommunity", "n.sites", "max.dist.mst", "age.max.phylo"),
@@ -331,7 +336,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
     spp.mat[4, ] <- max(phytools::nodeHeights(phylo))
   }
   size.mat<-matrix(NA,4,1,dimnames=list(c("Maximum_prior","Total_prior",
-                      "Nominal_posterior","Final_posterior"),"Sample_size"))
+                                          "Nominal_posterior","Final_posterior"),"Sample_size"))
   size.mat[1,] <- max.sample.size.prior
   size.mat[2,] <- total.sample.size
   size.mat[3,] <- sample.size.posterior
@@ -355,8 +360,46 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                    Coordinates = xy.coords,
                    obs.entropy = div,
                    mean.sim.entropy = mean.sim.entropy
-                   )
+  )
   print("...but your kids are gonna love it!!!")
+  if(plot.res == TRUE){
+    if(W.r.prior = TRUE){
+      df_res <- data.frame(alpha_prior = res.list$Alpha_Prior_Distribution,
+                           alpha_posterior = res_list$Alpha_Posterior_Distribution,
+                           w_prior = res.list$W_Prior_Distribution,
+                           w_posterior = res.list$W_Posterior_Distribution)
+      alpha_plot_prior <- ggplot2::ggplot(df_res, aes(x = alpha_prior)) +
+        geom_histogram(aes(y=..density..), colour= "blue", fill="blue", alpha = 0.2) +
+        geom_density(alpha=.2, fill="blue")
+      alpha_all <- alpha_plot_prior +
+        ggplot(df_res, aes(x = alpha_posterior)) +
+        geom_histogram(aes(y = ..density..), colour = "red", fill = "red") +
+        geom_density(alpha = .2) +
+        title(main = "alpha posterior")
+      w_plot_prior <- ggplot2::ggplot(df_res, aes(x = w_prior)) +
+        geom_histogram(aes(y = ..density..), colour =  "blue", fill = "blue", alpha = 0.2) +
+        geom_density(alpha = 0.2, fill = "blue")
+      w_all <- w_plot_prior +
+        ggplot(df_res, aes(x = w_posterior)) +
+        geom_histogram(aes(y = ..density..), colour = "red", fill = "red") +
+        geom_density(alpha = .2) +
+        title(main = "w posterior")
+      alpha_all + w_all
+    } else{
+      df_res <- data.frame(alpha_prior = res.list$Alpha_Prior_Distribution,
+                           alpha_posterior = res_list$Alpha_Posterior_Distribution,
+                           w_prior = res.list$W_Prior_Distribution,
+                           w_posterior = res.list$W_Posterior_Distribution)
+      alpha_plot_prior <- ggplot2::ggplot(df_res, aes(x = alpha_prior)) +
+        geom_histogram(aes(y=..density..), colour= "blue", fill="blue", alpha = 0.2) +
+        geom_density(alpha=.2, fill="blue")
+      alpha_all <- alpha_plot_prior +
+        ggplot(df_res, aes(x = alpha_posterior)) +
+        geom_histogram(aes(y = ..density..), colour = "red", fill = "red") +
+        geom_density(alpha = .2) +
+        title("alpha posterior")
+      alpha_all
+    }
+  }
   return(res.list)
 }
-
