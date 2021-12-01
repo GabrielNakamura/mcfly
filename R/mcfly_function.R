@@ -215,6 +215,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
     #sample.size.posterior
     RES_prior <- RES$prior # priors
     RES <- RES$posterior # posteriors
+    mean.sim.entropy <- RES$mean.sim.entropy
     total.sample.size <- sapply(RES, function(x) ifelse(is.null(x), NA,
                                       x$sample.size))[sample.size.posterior]
     total.sample.size <- ifelse(is.na(total.sample.size),
@@ -323,8 +324,8 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                    COMM.sim = COMM.sim,
                    Species.Pools = spp.mat,
                    Sample_Attributes = size.mat,
-                   Alpha_Limits=DRoot.mat,
-                   Alpha.prior.mode=alpha.mode,
+                   Alpha_Limits = DRoot.mat,
+                   Alpha.prior.mode = alpha.mode,
                    Alpha_Prior_Distribution = RES_prior[, 1][!is.na(RES_prior[, 1])],
                    W_Prior_Distribution = RES_prior[ , 2][!is.na(RES_prior[, 2])],
                    Theta = theta.simul.ent,
@@ -333,7 +334,10 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                    Alpha_Posterior_Distribution = posterior.dist.alpha,
                    HPD_Alpha = HPD.alpha,
                    W_Posterior_Distribution = posterior.dist.w,
-                   HPD_w = HPD.w
+                   HPD_w = HPD.w,
+                   Coordinates = xy.coords,
+                   obs.entropy = div,
+                   mean.sim.entropy = mean.sim.entropy
                    )
   print("...but your kids are gonna love it!!!")
   return(res.list)

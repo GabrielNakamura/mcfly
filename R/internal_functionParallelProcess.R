@@ -61,6 +61,10 @@ f.internal <- function(k,
   cont.size.ent <- 0
   total.sample.size <- 0
   RES.prior <- matrix(NA, nrow =  max.sample.size.prior, ncol = 2)
+  mat.ent <- matrix(NA, nrow = length(names.comm), ncol = length(max.sample.size.prior),
+                dimnames = list(names.comm,
+                                paste("sim", 1:max.sample.size.prior, sep = ""))
+                )
   for(i in 1:max.sample.size.prior){
     sim.ID<-paste(scenario.ID,i,sep=".")
     total.sample.size <- total.sample.size+1
@@ -92,7 +96,7 @@ f.internal <- function(k,
       comm.sim <- ifelse(comm.sim > 0, yes = 1, no = 0)
     }
     # entropy values----
-    ent<- vegan::renyi(comm.sim, scales = entropy.order)
+    ent <- vegan::renyi(comm.sim, scales = entropy.order)
     # summary statistic correlation -----
     if(summary.stat == 1){
       # correlation between observed and simulated entropy
@@ -116,14 +120,17 @@ f.internal <- function(k,
       RES[[cont.size.ent]]$cor.posterior.ent <- cor.obs.simul.ent
       RES[[cont.size.ent]]$k.niche.simul <- k.niche
       RES[[cont.size.ent]]$sample.size <- total.sample.size
+      mat.ent[, cont.size.ent] <- vegan::renyi(comm.sim, scales = entropy.order)[, 1]
     }
     if(cont.size.ent == sample.size.posterior){
       break
     }
   }
-  list_res <- vector(mode = "list", length = 2)
+  list_res <- vector(mode = "list", length = 3)
   list_res[[1]] <- RES
   list_res[[2]] <- RES.prior
-  names(list_res) <- c("posterior", "prior")
+  mean.sim.entropy <- apply(mat.ent, MARGIN = 1, function(x) mean(x, na.rm = TRUE))
+  list_res[[3]] <- mean.sim.entropy
+  names(list_res) <- c("posterior", "prior", "mean.sim.entropy")
   return(list_res)
 }
