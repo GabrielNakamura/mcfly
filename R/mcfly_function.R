@@ -22,8 +22,8 @@
 #' @param W.r.prior Logical (TRUE or FALSE) indicating if the the W.r parameter would be a single value (FALSE) with value of 0, indicating a panmictic metacommunity
 #'     or follow a prior distribution (TRUE) of values calculated as being the slopes of dispersal kernel indicating the contribution of species from neighboring patches
 #'     to the local immigrant pool.
-#' @param summary.stat Character indicating the type of summary statistic that will be used in ABC model. Default is "correlation", that is calculated
-#'     as the correlation between the diversity values calculated according to the Rényi scale defined in entropy.order argument. Another option is "dimensionality"
+#' @param summary.stat Character indicating the type of summary statistic that will be used in ABC model. Default is "distance", that is calculated
+#'     as the complement of the correlation between the diversity values calculated according to the Rényi scale defined in entropy.order argument. Another option is "dimensionality"
 #'     but it is not implemented yet.
 #' @param tol Numeric value that defines the tolerance value (calculated as 1 - correlation) used in ABC model to assemble the posterior distribution. Default is 0.2.
 #' @param sample.size.posterior Numeric value that defines the minimum size of the posterior distribution. Default is 240.
@@ -52,7 +52,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                      n.timestep = 50,
                      OU.alpha=c("uniform","half-life"),
                      W.r.prior = FALSE,
-                     summary.stat = "correlation",
+                     summary.stat = "distance",
                      tol = 0.2,
                      sample.size.posterior = 240, max.sample.size.prior = 2400,
                      HPD = 0.9,
@@ -80,7 +80,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   if (HPD < 0 | HPD>1) {
     stop("\n HPD must vary between 0 and 1")
   }
-  SUMMARY.stat <- c("correlation", "dimensionality")
+  SUMMARY.stat <- c("distance", "dimensionality")
   summary.stat <- pmatch(summary.stat, SUMMARY.stat)
   if (length(summary.stat) != 1) {
     stop("\n Only one argument is accepted in summary.stat")
