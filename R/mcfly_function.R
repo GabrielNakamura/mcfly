@@ -310,9 +310,26 @@ mcfly <- function(comm, phylo, envir, xy.coords,
     HPD.alpha <- NA
     HPD.w <- NA
     }
-  spp.mat<-matrix(NA,2,1,dimnames=list(c("Spp.phylogeny","Spp.metacommunity"),"N"))
-  spp.mat[1,]<-length(phylo$tip.label)
-  spp.mat[2,]<-ncol(comm)
+  if(W.r.prior == TRUE){
+    spp.mat <- matrix(NA, 5, 1,
+                      dimnames = list(c("Spp.phylogeny", "Spp.metacommunity", "n.sites", "max.dist.mst", "age.max.phylo"),
+                                      "N")
+    )
+    spp.mat[1, ] <- length(phylo$tip.label)
+    spp.mat[2, ] <- ncol(comm)
+    spp.mat[3, ] <- nrow(comm)
+    spp.mat[4, ] <- r # minimun spanning tree
+    spp.mat[5, ] <- max(phytools::nodeHeights(phylo))
+  } else{
+    spp.mat <- matrix(NA, 4, 1,
+                      dimnames = list(c("Spp.phylogeny", "Spp.metacommunity", "n.sites", "age.max.phylo"),
+                                      "N")
+    )
+    spp.mat[1, ] <- length(phylo$tip.label)
+    spp.mat[2, ] <- ncol(comm)
+    spp.mat[3, ] <- nrow(comm)
+    spp.mat[4, ] <- max(phytools::nodeHeights(phylo))
+  }
   size.mat<-matrix(NA,4,1,dimnames=list(c("Maximum_prior","Total_prior",
                       "Nominal_posterior","Final_posterior"),"Sample_size"))
   size.mat[1,] <- max.sample.size.prior
@@ -322,7 +339,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   date.mat[2,] <- date()
   res.list <- list(Time.spent=date.mat,
                    COMM.sim = COMM.sim,
-                   Species.Pools = spp.mat,
+                   Data.Attributes = spp.mat,
                    Sample_Attributes = size.mat,
                    Alpha_Limits = DRoot.mat,
                    Alpha.prior.mode = alpha.mode,
