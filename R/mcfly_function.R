@@ -364,41 +364,85 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   print("...but your kids are gonna love it!!!")
   if(plot.res == TRUE){
     if(W.r.prior = TRUE){
-      df_res <- data.frame(alpha_prior = res.list$Alpha_Prior_Distribution,
-                           alpha_posterior = res_list$Alpha_Posterior_Distribution,
-                           w_prior = res.list$W_Prior_Distribution,
-                           w_posterior = res.list$W_Posterior_Distribution)
-      alpha_plot_prior <- ggplot2::ggplot(df_res, aes(x = alpha_prior)) +
-        geom_histogram(aes(y=..density..), colour= "blue", fill="blue", alpha = 0.2) +
-        geom_density(alpha=.2, fill="blue")
-      alpha_all <- alpha_plot_prior +
-        ggplot(df_res, aes(x = alpha_posterior)) +
-        geom_histogram(aes(y = ..density..), colour = "red", fill = "red") +
-        geom_density(alpha = .2) +
-        title(main = "alpha posterior")
-      w_plot_prior <- ggplot2::ggplot(df_res, aes(x = w_prior)) +
-        geom_histogram(aes(y = ..density..), colour =  "blue", fill = "blue", alpha = 0.2) +
-        geom_density(alpha = 0.2, fill = "blue")
-      w_all <- w_plot_prior +
-        ggplot(df_res, aes(x = w_posterior)) +
-        geom_histogram(aes(y = ..density..), colour = "red", fill = "red") +
-        geom_density(alpha = .2) +
-        title(main = "w posterior")
-      alpha_all + w_all
+      df_res_alpha <- data.frame(alpha_values = c(res.list$Alpha_Prior_Distribution,
+                                                  res.list$Alpha_Posterior_Distribution),
+                                 distribution = c(rep("prior", length(res.list$Alpha_Prior_Distribution)),
+                                                  rep("posterior", length(res.list$Alpha_Posterior_Distribution))
+                                 )
+      )
+      df_res_w <- data.frame(w_values = c(res.list$W_Prior_Distribution,
+                                          res.list$W_Posterior_Distribution),
+                             distribution = c(rep("prior", length(res.list$W_Prior_Distribution)),
+                                              rep("posterior", length(res.list$W_Posterior_Distribution))
+                             )
+      )
+      density_alpha<- density(x=res.list$Alpha_Posterior_Distribution,
+                              from=res.list$Alpha_Limits[2],
+                              to=res.list$Alpha_Limits[3])
+      hdi_09_alpha <- HDInterval::hdi(object = density_alpha, credMass =
+                                        0.9, allowSplit = TRUE)
+      ord_alpha <- order(apply(hdi_09_alpha, MARGIN = 1, FUN = diff), decreasing = T)
+
+
+      data_density_alpha <- tibble(x = density_alpha$x, y = density_alpha$y) %>%
+        mutate(variable = case_when(
+          (x >= hdi_09_alpha[ord_alpha[1], 1] & x <= hdi_09_alpha[ord_alpha[1], 2]) ~ "On",
+          (x >= hdi_09_alpha[ord_alpha[2], 1]  & x <= hdi_09_alpha[ord_alpha[2], 2]) ~ "Off",
+          TRUE ~ NA_character_))
+
+      alpha_plot <- ggplot(data = df_res_alpha, aes(x = alpha_values, fill =  distribution)) +
+        geom_histogram(aes(y=..density..), alpha=0.5,
+                       position="identity") +
+        geom_density(data = df_res_alpha, aes(x = alpha_values, color = distribution), alpha=.2, show.legend = F) +
+        geom_area(data = filter(data_density_alpha, variable == 'On'), aes(x = x, y = y), fill = 'red', alpha = .6) +
+        geom_area(data = filter(data_density_alpha, variable == 'Off'), aes(x = x, y = y), fill = 'red', alpha = .6) +
+        labs(y = "Density", x = "Alpha values" , fill = "Distribution") +
+        theme(legend.position = "right", panel.background = element_rect(fill = "transparent"),
+              plot.margin = unit(c(0.4, 0.4, 0.4, 0.4), "mm"),
+              legend.title = element_text(family = "Times", color = "black", face = "bold", size = 12),
+              legend.text = element_text(family = "Times", color = "black", size = 12),
+              axis.text = element_text(family = "Times", color = "black", size = 12),
+              axis.line = element_line(colour = "black"),
+              plot.subtitle = element_text(family = "Arial",
+                                           color = "black",
+                                           size = 9,
+                                           hjust = 0.5,
+                                           margin = margin(b = 6)
+              ))
+      density_w <- density(x=res.list$W_Posterior_Distribution)
+      hdi_09_w <- HDInterval::hdi(object = density_w, credMass =
+                                    0.9, allowSplit = TRUE)
+      ord_w <- order(apply(hdi_09_w, MARGIN = 1, FUN = diff), decreasing = T)
+
+      data_density_w <- tibble(x = density_w$x, y = density_w$y) %>%
+        mutate(variable = case_when(
+          (x >= hdi_09_w[ord_w[1], 1] & x <= hdi_09_w[ord_w[1],2]) ~ "On",
+          (x >= hdi_09_w[ord_w[2], 1]  & x <= hdi_09_w[ord_w[2],2]) ~ "Off",
+          TRUE ~ NA_character_))
+
+
+      W_plot <- ggplot(data = df_res_w, aes(x = w_values, fill =  distribution)) +
+        geom_histogram(aes(y=..density..), alpha=0.5,
+                       position="identity") +
+        geom_density(data = df_res_w, aes(x = w_values, color = distribution), alpha=.2, show.legend = F) +
+        geom_area(data = filter(data_density_w, variable == 'On'), aes(x = x, y = y), fill = 'red', alpha = .6) +
+        geom_area(data = filter(data_density_w, variable == 'Off'), aes(x = x, y = y), fill = 'red', alpha = .6) +
+        labs(y = "Density", x = "W values" , fill = "Distribution") +
+        theme(legend.position = "right", panel.background = element_rect(fill = "transparent"),
+              plot.margin = unit(c(0.4, 0.4, 0.4, 0.4), "mm"),
+              legend.title = element_text(family = "Times", color = "black", face = "bold", size = 12),
+              legend.text = element_text(family = "Times", color = "black", size = 12),
+              axis.text = element_text(family = "Times", color = "black", size = 12),
+              axis.line = element_line(colour = "black"),
+              plot.subtitle = element_text(family = "Arial",
+                                           color = "black",
+                                           size = 9,
+                                           hjust = 0.5,
+                                           margin = margin(b = 6)
+              ))
+      alpha_plot + W_plot
     } else{
-      df_res <- data.frame(alpha_prior = res.list$Alpha_Prior_Distribution,
-                           alpha_posterior = res_list$Alpha_Posterior_Distribution,
-                           w_prior = res.list$W_Prior_Distribution,
-                           w_posterior = res.list$W_Posterior_Distribution)
-      alpha_plot_prior <- ggplot2::ggplot(df_res, aes(x = alpha_prior)) +
-        geom_histogram(aes(y=..density..), colour= "blue", fill="blue", alpha = 0.2) +
-        geom_density(alpha=.2, fill="blue")
-      alpha_all <- alpha_plot_prior +
-        ggplot(df_res, aes(x = alpha_posterior)) +
-        geom_histogram(aes(y = ..density..), colour = "red", fill = "red") +
-        geom_density(alpha = .2) +
-        title("alpha posterior")
-      alpha_all
+      alpha_plot
     }
   }
   return(res.list)
