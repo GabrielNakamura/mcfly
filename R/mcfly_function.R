@@ -45,7 +45,24 @@
 #' @importFrom ggplot2 geom_density
 #' @import patchwork
 #'
-#' @return
+#' @return A list containing the following objects:
+#'     \item{Time.spent}{The amout of time spent to run the analysis.}
+#'     \item{COMM.sim}{Simulated community matrix.}
+#'     \item{Data.Attributes}{A matrix containing the number of species in the phylogeny,
+#'     the number of species in the metacommunity, number of sites in the metacommunity,
+#'     maximmun distance between two species in the phylogenetic tree, tree depth}
+#'      \item{Sample_Attributes}{A matrix containing information of posterior distribution as the maximum size of the posterior,
+#'          total sample sample size of prior, the type of posterior (if alpha or half-life) and total size of posterior}
+#'      \item{Alpha_Limits}{A matrix containing the minimum and maximum alfa parameters in the posterior distribution}
+#'      \item{Alpha.prior.mode}{A character indicating the type of prior used in ABC (alpha or half-life)}
+#'      \item{Alpha.prior.mode}{A character indicating the type of prior used in ABC (alpha or half-life)}
+#'      \item{Alpha_Prior_Distribution}{Numeric vector with alpha values used as the prior distribution}
+#'      \item{W_Prior_Distribution}{Numeric vector with w values used as the prior distribution}
+#'      \item{Theta}{Numeric values indicating theta parameters in the simulation}
+#'      \item{K_niche}{Numeric vector with w values used as the prior distribution}
+#' @note \strong{IMPORTANT}: The sequence species show up in the community data matrix MUST be the
+#' same as they show up in the phylogenetic distance matrix. See details and \code{\link{organize.pcps}}.
+#'
 #' @export
 #'
 #
