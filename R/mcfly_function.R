@@ -59,9 +59,15 @@
 #'      \item{Alpha_Prior_Distribution}{Numeric vector with alpha values used as the prior distribution}
 #'      \item{W_Prior_Distribution}{Numeric vector with w values used as the prior distribution}
 #'      \item{Theta}{Numeric values indicating theta parameters in the simulation}
-#'      \item{K_niche}{Numeric vector with w values used as the prior distribution}
-#' @note \strong{IMPORTANT}: The sequence species show up in the community data matrix MUST be the
-#' same as they show up in the phylogenetic distance matrix. See details and \code{\link{organize.pcps}}.
+#'      \item{K_niche}{Numeric vector with Blomberg's K statistic of phylogenetic signal calculated for simulated traits}
+#'      \item{Summary.Statistics}{Numeric vector with correlations between observed and simulated diversity metrics}
+#'      \item{Alpha_Posterior_Distribution}{Numeric vector containing alpha values estimated from ABC model (posterior distribution)}
+#'      \item{HPD_Alpha}{Numeric vector indicating the range of alpha posterior distribution corresponding to the High Posterior Density in a probability density distribution}
+#'      \item{W_Posterior_Distribution}{Numeric vector containing the w values estimated from ABC model (posterior distribution)}
+#'      \item{HPD_w}{Numeric vector indicating the range of w posterior distribution corresponding to the High Posterior Density in a probability density distribution}
+#'      \item{Coordinates}{A matrix with x and y coordinates of sites in a metacommunity}
+#'      \item{obs.entropy}{A vector containing the observed values of diversity for each site in the metacommunity}
+#'      \item{mean.sim.entropy}{A vector containing mean values of diversity for each site computed from simulated metacommunities}
 #'
 #' @export
 #'
