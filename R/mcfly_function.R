@@ -33,7 +33,8 @@
 #' @param return.comm Logical (TRUE/FALSE), indicating if the simulated metacommunities must be returned in the output. Default is FALSE.
 #' @param return.w.priors  Logical (TRUE/FALSE), indicating if the prior distribution of W.r values used in ABC model must be returned in the output.
 #'     Default is FALSE
-#' @param return.alpha.priors Logical (TRUE/FALSE), indicating if the the prior distribution of alpha values must be returned in the output. Default is FALSE.
+#' @param return.alpha.priors Logical (TRUE/FALSE), indicating if the the prior distribution of alpha values must be returned in the output. Default is TRUE
+#' @param plot.res Logical, indicates if a plot with posterior and prior distribution, as well as the HPD must be showed. Default is TRUE
 #' @param parallel Numerical value indicating the numbers of cores that must be used in the parallel computation. Default is NULL, indicating that the
 #'     calculations of ABC model will not be parallelized.
 #' @param scenario.ID Character indicating the name of the simulation scenario. The same as used in \code{\link{metasim}}. Default is "mcfly".
