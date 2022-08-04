@@ -22,18 +22,12 @@
 #' @param W.r.prior Logical (TRUE or FALSE) indicating if the the W.r parameter would be a single value (FALSE) with value of 0, indicating a panmictic metacommunity
 #'     or follow a prior distribution (TRUE) of values calculated as being the slopes of dispersal kernel indicating the contribution of species from neighboring patches
 #'     to the local immigrant pool.
-#' @param summary.stat Character indicating the type of summary statistic that will be used in ABC model. Default is "distance", that is calculated
-#'     as the complement of the correlation between the diversity values calculated according to the Rényi scale defined in entropy.order argument. Another option is "dimensionality"
-#'     but it is not implemented yet.
 #' @param tol Numeric value that defines the tolerance value (calculated as 1 - correlation) used in ABC model to assemble the posterior distribution. Default is 0.2.
 #' @param sample.size.posterior Numeric value that defines the minimum size of the posterior distribution. Default is 240.
 #' @param max.sample.size.prior Numeric value that defines the maximum size of the posterior distribution. Default is 2400.
 #' @param HPD Numeric value indicating the probability mass for the Highest Density Interval for the posterior
 #'     probability distribution obtained in ACB model. This is the same value used in \code{\link{hdi}}. Default is 0.9.
 #' @param return.comm Logical (TRUE/FALSE), indicating if the simulated metacommunities must be returned in the output. Default is FALSE.
-#' @param return.w.priors  Logical (TRUE/FALSE), indicating if the prior distribution of W.r values used in ABC model must be returned in the output.
-#'     Default is FALSE
-#' @param return.alpha.priors Logical (TRUE/FALSE), indicating if the the prior distribution of alpha values must be returned in the output. Default is TRUE
 #' @param plot.res Logical, indicates if a plot with posterior and prior distribution, as well as the HPD must be showed. Default is TRUE
 #' @param parallel Numerical value indicating the numbers of cores that must be used in the parallel computation. Default is NULL, indicating that the
 #'     calculations of ABC model will not be parallelized.
@@ -48,27 +42,27 @@
 #'
 #' @return A list containing the following objects:
 #'     \item{Time.spent}{The amout of time spent to run the analysis.}
-#'     \item{COMM.sim}{Simulated community matrix.}
+#'     \item{Simulated.Metacomm}{Simulated community matrix.}
 #'     \item{Data.Attributes}{A matrix containing the number of species in the phylogeny,
 #'     the number of species in the metacommunity, number of sites in the metacommunity,
 #'     maximmun distance between two species in the phylogenetic tree, tree depth}
-#'      \item{Sample_Attributes}{A matrix containing information of posterior distribution as the maximum size of the posterior,
+#'      \item{Sample.Attributes}{A matrix containing information of posterior distribution as the maximum size of the posterior,
 #'          total sample sample size of prior, the type of posterior (if alpha or half-life) and total size of posterior}
-#'      \item{Alpha_Limits}{A matrix containing the minimum and maximum alfa parameters in the posterior distribution}
+#'      \item{Alpha.Limits}{A matrix containing the minimum and maximum alfa parameters in the posterior distribution}
 #'      \item{Alpha.prior.mode}{A character indicating the type of prior used in ABC (alpha or half-life)}
 #'      \item{Alpha.prior.mode}{A character indicating the type of prior used in ABC (alpha or half-life)}
 #'      \item{Alpha_Prior_Distribution}{Numeric vector with alpha values used as the prior distribution}
-#'      \item{W_Prior_Distribution}{Numeric vector with w values used as the prior distribution}
+#'      \item{W.Prior.Distribution}{Numeric vector with w values used as the prior distribution}
 #'      \item{Theta}{Numeric values indicating theta parameters in the simulation}
-#'      \item{K_niche}{Numeric vector with Blomberg's K statistic of phylogenetic signal calculated for simulated traits}
-#'      \item{Summary.Statistics}{Numeric vector with correlations between observed and simulated diversity metrics}
-#'      \item{Alpha_Posterior_Distribution}{Numeric vector containing alpha values estimated from ABC model (posterior distribution)}
-#'      \item{HPD_Alpha}{Numeric vector indicating the range of alpha posterior distribution corresponding to the High Posterior Density in a probability density distribution}
-#'      \item{W_Posterior_Distribution}{Numeric vector containing the w values estimated from ABC model (posterior distribution)}
-#'      \item{HPD_w}{Numeric vector indicating the range of w posterior distribution corresponding to the High Posterior Density in a probability density distribution}
+#'      \item{K.niche}{Numeric vector with Blomberg's K statistic of phylogenetic signal calculated for simulated traits}
+#'      \item{Distance.measure}{Numeric vector with correlations between observed and simulated diversity metrics}
+#'      \item{Alpha.Posterior.Distribution}{Numeric vector containing alpha values estimated from ABC model (posterior distribution)}
+#'      \item{HPD.Alpha}{Numeric vector indicating the range of alpha posterior distribution corresponding to the High Posterior Density in a probability density distribution}
+#'      \item{W.Posterior.Distribution}{Numeric vector containing the w values estimated from ABC model (posterior distribution)}
+#'      \item{HPD.w}{Numeric vector indicating the range of w posterior distribution corresponding to the High Posterior Density in a probability density distribution}
 #'      \item{Coordinates}{A matrix with x and y coordinates of sites in a metacommunity}
-#'      \item{obs.entropy}{A vector containing the observed values of diversity for each site in the metacommunity}
-#'      \item{mean.sim.entropy}{A vector containing mean values of diversity for each site computed from simulated metacommunities}
+#'      \item{Observed.Entropy}{A vector containing the observed values of diversity for each site in the metacommunity}
+#'      \item{Mean.Simulated.Entropy}{A vector containing mean values of diversity for each site computed from simulated metacommunities}
 #'
 #' @export
 #'
@@ -85,8 +79,6 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                   sample.size.posterior = 240, max.sample.size.prior = 2400,
                   HPD = 0.9,
                   return.comm = FALSE,
-                  return.w.priors = FALSE,
-                  return.alpha.priors = TRUE,
                   plot.res = TRUE,
                   parallel = NULL,
                   scenario.ID="mcfly",
@@ -142,11 +134,9 @@ mcfly <- function(comm, phylo, envir, xy.coords,
     alpha.mode<-"half-life"
   }
 
-  if(return.alpha.priors){
-    prior.alpha.res <- prior.alpha
-  } else{
-    prior.alpha.res<- NULL
-  }
+
+  prior.alpha.res <- prior.alpha
+
 
   if(occurrence){
     comm <- ifelse(comm > 0, yes = 1, no = 0)
@@ -180,11 +170,9 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   } else {
     prior.w <- 0
   }
-  if(return.w.priors){
-    prior.w.res <- prior.w
-  } else{
-    prior.w.res<- NULL
-  }
+
+  prior.w.res <- prior.w
+
   # define carrying capacity of sites
   if(occurrence){
     comm <- comm*100
@@ -244,7 +232,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
     #sample.size.posterior
     RES_prior <- RES$prior # priors
     RES <- RES$posterior # posteriors
-    mean.sim.entropy <- RES$mean.sim.entropy
+    Mean.Simulated.Entropy <- RES$Mean.Simulated.Entropy
     total.sample.size <- sapply(RES, function(x) ifelse(is.null(x), NA,
                                                         x$sample.size))[sample.size.posterior]
     total.sample.size <- ifelse(is.na(total.sample.size),
@@ -302,10 +290,10 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   }
   # Organize results
   if(return.comm){
-    COMM.sim <- lapply(RES, function(x) if(is.null(x)) NULL else x$comm.sim)
-    COMM.sim <- COMM.sim[unlist(lapply(COMM.sim, function(x) !is.null(x)))]
+    Simulated.Metacomm <- lapply(RES, function(x) if(is.null(x)) NULL else x$Simulated.Metacomm)
+    Simulated.Metacomm <- Simulated.Metacomm[unlist(lapply(Simulated.Metacomm, function(x) !is.null(x)))]
   } else{
-    COMM.sim <- NULL
+    Simulated.Metacomm <- NULL
   }
   w.simul.ent <- sapply(RES, function(x) ifelse(is.null(x), NA, x$w.simul.ent))
   alpha.simul.ent <- sapply(RES, function(x) ifelse(is.null(x), NA,
@@ -366,43 +354,43 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   size.mat[3,] <- sample.size.posterior
   size.mat[4,] <- n.tol
   date.mat[2,] <- date()
-  res.list <- list(Time.spent=date.mat,
-                   COMM.sim = COMM.sim,
+  res.list <- list(Time.spent = date.mat,
+                   Simulated.Metacomm = Simulated.Metacomm,
                    Data.Attributes = spp.mat,
-                   Sample_Attributes = size.mat,
-                   Alpha_Limits = DRoot.mat,
+                   Sample.Attributes = size.mat,
+                   Alpha.Limits = DRoot.mat,
                    Alpha.prior.mode = alpha.mode,
                    Alpha_Prior_Distribution = RES_prior[, 1][!is.na(RES_prior[, 1])],
-                   W_Prior_Distribution = RES_prior[ , 2][!is.na(RES_prior[, 2])],
+                   W.Prior.Distribution = RES_prior[ , 2][!is.na(RES_prior[, 2])],
                    Theta = theta.simul.ent,
-                   K_niche = k.niche.simul,
-                   Summary.Statistics = cor.posterior.ent,
-                   Alpha_Posterior_Distribution = posterior.dist.alpha,
-                   HPD_Alpha = HPD.alpha,
-                   W_Posterior_Distribution = posterior.dist.w,
-                   HPD_w = HPD.w,
+                   K.niche = k.niche.simul,
+                   Distance.measure = (1 - cor.posterior.ent),
+                   Alpha.Posterior.Distribution = posterior.dist.alpha,
+                   HPD.Alpha = HPD.alpha,
+                   W.Posterior.Distribution = posterior.dist.w,
+                   HPD.w = HPD.w,
                    Coordinates = xy.coords,
-                   obs.entropy = div,
-                   mean.sim.entropy = mean.sim.entropy
+                   Observed.Entropy = div,
+                   Mean.Simulated.Entropy = Mean.Simulated.Entropy
   )
   print("...but your kids are gonna love it!!!")
   if(plot.res == TRUE){
     if(W.r.prior == TRUE){
       df_res_alpha <- data.frame(alpha_values = c(res.list$Alpha_Prior_Distribution,
-                                                  res.list$Alpha_Posterior_Distribution),
+                                                  res.list$Alpha.Posterior.Distribution),
                                  distribution = c(rep("prior", length(res.list$Alpha_Prior_Distribution)),
-                                                  rep("posterior", length(res.list$Alpha_Posterior_Distribution))
+                                                  rep("posterior", length(res.list$Alpha.Posterior.Distribution))
                                  )
       )
-      df_res_w <- data.frame(w_values = c(res.list$W_Prior_Distribution,
-                                          res.list$W_Posterior_Distribution),
-                             distribution = c(rep("prior", length(res.list$W_Prior_Distribution)),
-                                              rep("posterior", length(res.list$W_Posterior_Distribution))
+      df_res_w <- data.frame(w_values = c(res.list$W.Prior.Distribution,
+                                          res.list$W.Posterior.Distribution),
+                             distribution = c(rep("prior", length(res.list$W.Prior.Distribution)),
+                                              rep("posterior", length(res.list$W.Posterior.Distribution))
                              )
       )
-      density_alpha<- density(x=res.list$Alpha_Posterior_Distribution,
-                              from=res.list$Alpha_Limits[2],
-                              to=res.list$Alpha_Limits[3])
+      density_alpha<- density(x=res.list$Alpha.Posterior.Distribution,
+                              from=res.list$Alpha.Limits[2],
+                              to=res.list$Alpha.Limits[3])
       hdi_09_alpha <- HDInterval::hdi(object = density_alpha, credMass =
                                         0.9, allowSplit = TRUE)
       ord_alpha <- order(apply(hdi_09_alpha, MARGIN = 1, FUN = diff), decreasing = T)
@@ -433,7 +421,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                                            hjust = 0.5,
                                            margin = margin(b = 6)
               ))
-      density_w <- density(x=res.list$W_Posterior_Distribution)
+      density_w <- density(x=res.list$W.Posterior.Distribution)
       hdi_09_w <- HDInterval::hdi(object = density_w, credMass =
                                     0.9, allowSplit = TRUE)
       ord_w <- order(apply(hdi_09_w, MARGIN = 1, FUN = diff), decreasing = T)
