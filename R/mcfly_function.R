@@ -387,7 +387,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   )
   print("...but your kids are gonna love it!!!")
   if(plot.res == TRUE){
-    if(W.r.prior = TRUE){
+    if(W.r.prior == TRUE){
       df_res_alpha <- data.frame(alpha_values = c(res.list$Alpha_Prior_Distribution,
                                                   res.list$Alpha_Posterior_Distribution),
                                  distribution = c(rep("prior", length(res.list$Alpha_Prior_Distribution)),

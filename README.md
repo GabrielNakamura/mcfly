@@ -1,7 +1,7 @@
 
 # mcfly
 
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/mcfly)](https://cran.r-project.org/package=mcfly)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/mcfly)](https://cran.r-project.org/package=mcfly)
 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://choosealicense.com/licenses/mit/)
 
@@ -28,25 +28,29 @@ diversity across a set of sites and a given environmental gradient.
 
 To install mcfly package use:
 
-`devtools::install_github("GabrielNakamura/mcfly", force = T,
-build_vignettes = T)`
+``` r
+devtools::install_github("GabrielNakamura/mcfly", force = T, build_vignettes = T)
+```
 
 To run the vignette:
 
-`vignette("McFly_vignette")`
+``` r
+vignette("McFly_vignette")
+```
 
 **Important**: after installation, relaunch R
 
 # Next steps
 
-  - [x] Corrigir Summary.stat -\> Distance. Corrigir tb o help
-  - [x] Inserir data.frame com coordenadas espaciais, obs.entropy e
+-   [x] Corrigir Summary.stat -> Distance. Corrigir tb o help
+-   [x] Inserir data.frame com coordenadas espaciais, obs.entropy e
     mean.sim.entropy no output
-  - [x] Substituir Species.Pools por Data.Attributes, contendo
+-   [x] Substituir Species.Pools por Data.Attributes, contendo
     spp.phylogeny, spp.metacommunity, n.sites, max.dist.mst., tempo
     máximo da árvore (raiz tip)
-  - [ ] calcular density functions e extrair valores
-  - [ ] incluir módulo gráfico, incluindo density functions para os
-    posteriores e a curva dlk x r. e incluir gráfico meia vida. calcular
-    o hpd da meia vida com o log e depois converter
-  - [ ] CRAN release
+-   [x] calcular density functions e extrair valores
+-   [x] incluir módulo gráfico, incluindo density functions para os
+    posteriores e a curva dlk x r.
+-   [ ] e incluir gráfico meia vida. calcular o hpd da meia vida com o
+    log e depois converter
+-   [ ] CRAN release
