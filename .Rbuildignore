@@ -2,3 +2,6 @@
 ^\.Rproj\.user$
 ^mcfly\.Rproj$
 ^LICENSE\.md$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
