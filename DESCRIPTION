@@ -30,17 +30,19 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
 Imports:
-    ape, 
+    ape,
+    ggplot2,
     HDInterval,
     MCSim,
     knitr,
+    patchwork,
     phytools,
     picante,
     rmarkdown,
     scales,
-    vegan,
+    vegan
 Depends: 
     R (>= 2.10)
 VignetteBuilder:

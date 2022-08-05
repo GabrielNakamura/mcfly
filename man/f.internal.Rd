@@ -23,7 +23,6 @@ f.internal(
   spp.names,
   names.comm,
   entropy.order,
-  summary.stat,
   div,
   tol,
   return.comm,
@@ -67,8 +66,6 @@ f.internal(
 \item{names.comm}{names for communities}
 
 \item{entropy.order}{diversity value accordingly to entropy order}
-
-\item{summary.stat}{summary statistic to be used (correlation)}
 
 \item{div}{diversity value}
 

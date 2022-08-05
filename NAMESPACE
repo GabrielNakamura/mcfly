@@ -2,4 +2,8 @@
 
 export(define_tolerance)
 export(mcfly)
+import(patchwork)
 import(stats)
+importFrom(ggplot2,geom_density)
+importFrom(ggplot2,geom_histogram)
+importFrom(ggplot2,ggplot)

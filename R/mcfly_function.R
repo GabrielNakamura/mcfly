@@ -78,7 +78,6 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                   n.timestep = 50,
                   OU.alpha=c("uniform","half-life"),
                   W.r.prior = FALSE,
-                  summary.stat = "distance",
                   tol = 0.2,
                   sample.size.posterior = 240, max.sample.size.prior = 2400,
                   HPD = 0.9,
@@ -104,14 +103,6 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   }
   if (HPD < 0 | HPD>1) {
     stop("\n HPD must vary between 0 and 1")
-  }
-  SUMMARY.stat <- c("distance", "dimensionality")
-  summary.stat <- pmatch(summary.stat, SUMMARY.stat)
-  if (length(summary.stat) != 1) {
-    stop("\n Only one argument is accepted in summary.stat")
-  }
-  if (is.na(summary.stat)) {
-    stop("\n Invalid summary.stat")
   }
 
   if(any(!all(colnames(comm) %in% phylo$tip.label))){
@@ -221,7 +212,6 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                       spp.names = spp.names,
                       names.comm = names.comm,
                       entropy.order = entropy.order,
-                      summary.stat = summary.stat,
                       div = div,
                       tol = tol,
                       return.comm = return.comm,
@@ -261,7 +251,6 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                                spp.names = spp.names,
                                names.comm = names.comm,
                                entropy.order = entropy.order,
-                               summary.stat = summary.stat,
                                div = div,
                                tol = tol,
                                return.comm = return.comm,

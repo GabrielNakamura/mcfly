@@ -18,7 +18,6 @@
 #' @param spp.names names of species
 #' @param names.comm names for communities
 #' @param entropy.order diversity value accordingly to entropy order
-#' @param summary.stat summary statistic to be used (correlation)
 #' @param div diversity value
 #' @param tol tolerance value
 #' @param return.comm logical
@@ -47,7 +46,6 @@ f.internal <- function(k,
                        spp.names,
                        names.comm,
                        entropy.order,
-                       summary.stat,
                        div,
                        tol,
                        return.comm,
@@ -98,7 +96,6 @@ f.internal <- function(k,
     # entropy values----
     ent <- vegan::renyi(comm.sim, scales = entropy.order)
     # summary statistic correlation -----
-    if(summary.stat == 1){
       # correlation between observed and simulated entropy
       cor.obs.simul.ent <- suppressWarnings(cor(ent, div))
       # tolerance value of ABC
@@ -106,7 +103,6 @@ f.internal <- function(k,
       if(is.na(tol.sim.obs.ent)){
         tol.sim.obs.ent <- 1
       }
-    }
 
     # posterior distribution-----
     if(tol.sim.obs.ent <= tol){

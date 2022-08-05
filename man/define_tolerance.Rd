@@ -14,7 +14,6 @@ define_tolerance(
   niche.breadth = 10,
   m = 0.5,
   n.timestep = 50,
-  summary.stat = "correlation",
   OU.alpha = c("uniform", "half-life"),
   max.sample.size.prior = 100 * parallel,
   sample.size.posterior = 20 * parallel,
@@ -44,9 +43,6 @@ define_tolerance(
 \item{n.timestep}{Numeric value indicating the number of timesteps used in the simulation of metacommunities,
 this is the same argument used in \code{\link{metasim}}. Default is 50, it is not recommended the use of lower values.}
 
-\item{summary.stat}{Character indicating the type of summary statistic that will be used in ABC model. Default is "correlation", that is calculated
-as the correlation between the diversity values calculated according to the Rényi scale defined in entropy.order argument.}
-
 \item{OU.alpha}{Character indicating the type of prior that will be used in ABC model. The options were "uniform" for a uniform sample of
 alpha values and "half-life" for a prior of alpha values represented as being half-life values, calculated as being log().}
 
@@ -64,9 +60,6 @@ calculations of ABC model will not be parallelized.}
 
 \item{probs}{Numeric indicating the quantiles to be used in tolerance distribution values.
 Default is c(0.8,0.9,0.95,0.99)}
-}
-\value{
-
 }
 \description{
 Define tolerance values for ABC model in mcfly

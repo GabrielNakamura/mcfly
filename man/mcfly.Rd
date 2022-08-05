@@ -2,7 +2,7 @@
 % Please edit documentation in R/mcfly_function.R
 \name{mcfly}
 \alias{mcfly}
-\title{Title Estimating the influence of stabilizing selection on species distribution}
+\title{Title Simulation framework to estimate the influence of niche adaptation rate and dispersal limitation on species diversity distribution across environmental gradients.}
 \usage{
 mcfly(
   comm,
@@ -16,14 +16,12 @@ mcfly(
   n.timestep = 50,
   OU.alpha = c("uniform", "half-life"),
   W.r.prior = FALSE,
-  summary.stat = "correlation",
   tol = 0.2,
   sample.size.posterior = 240,
   max.sample.size.prior = 2400,
   HPD = 0.9,
   return.comm = FALSE,
-  return.w.priors = FALSE,
-  return.alpha.priors = TRUE,
+  plot.res = TRUE,
   parallel = NULL,
   scenario.ID = "mcfly",
   output.dir.path = "delorean"
@@ -56,10 +54,6 @@ alpha values and "half-life" for a prior of alpha values represented as being ha
 or follow a prior distribution (TRUE) of values calculated as being the slopes of dispersal kernel indicating the contribution of species from neighboring patches
 to the local immigrant pool.}
 
-\item{summary.stat}{Character indicating the type of summary statistic that will be used in ABC model. Default is "correlation", that is calculated
-as the correlation between the diversity values calculated according to the Rényi scale defined in entropy.order argument. Another option is "dimensionality"
-but it is not implemented yet.}
-
 \item{tol}{Numeric value that defines the tolerance value (calculated as 1 - correlation) used in ABC model to assemble the posterior distribution. Default is 0.2.}
 
 \item{sample.size.posterior}{Numeric value that defines the minimum size of the posterior distribution. Default is 240.}
@@ -71,10 +65,7 @@ probability distribution obtained in ACB model. This is the same value used in \
 
 \item{return.comm}{Logical (TRUE/FALSE), indicating if the simulated metacommunities must be returned in the output. Default is FALSE.}
 
-\item{return.w.priors}{Logical (TRUE/FALSE), indicating if the prior distribution of W.r values used in ABC model must be returned in the output.
-Default is FALSE}
-
-\item{return.alpha.priors}{Logical (TRUE/FALSE), indicating if the the prior distribution of alpha values must be returned in the output. Default is FALSE.}
+\item{plot.res}{Logical, indicates if a plot with posterior and prior distribution, as well as the HPD must be showed. Default is TRUE}
 
 \item{parallel}{Numerical value indicating the numbers of cores that must be used in the parallel computation. Default is NULL, indicating that the
 calculations of ABC model will not be parallelized.}
@@ -84,13 +75,39 @@ calculations of ABC model will not be parallelized.}
 \item{output.dir.path}{Character indicating the name of directory to save simulations results and metadata used in \code{\link{metasim}}. Default is "delorean".}
 }
 \value{
-
+A list containing the following objects:
+\item{Time.spent}{The amout of time spent to run the analysis.}
+\item{Simulated.Metacomm}{Simulated community matrix.}
+\item{Data.Attributes}{A matrix containing the number of species in the phylogeny,
+the number of species in the metacommunity, number of sites in the metacommunity,
+maximmun distance between two species in the phylogenetic tree, tree depth}
+\item{Sample.Attributes}{A matrix containing information of posterior distribution as the maximum size of the posterior,
+total sample sample size of prior, the type of posterior (if alpha or half-life) and total size of posterior}
+\item{Alpha.Limits}{A matrix containing the minimum and maximum alfa parameters in the posterior distribution}
+\item{Alpha.prior.mode}{A character indicating the type of prior used in ABC (alpha or half-life)}
+\item{Alpha.prior.mode}{A character indicating the type of prior used in ABC (alpha or half-life)}
+\item{Alpha_Prior_Distribution}{Numeric vector with alpha values used as the prior distribution}
+\item{W.Prior.Distribution}{Numeric vector with w values used as the prior distribution}
+\item{Theta}{Numeric values indicating theta parameters in the simulation}
+\item{K.niche}{Numeric vector with Blomberg's K statistic of phylogenetic signal calculated for simulated traits}
+\item{Distance.measure}{Numeric vector with correlations between observed and simulated diversity metrics}
+\item{Alpha.Posterior.Distribution}{Numeric vector containing alpha values estimated from ABC model (posterior distribution)}
+\item{HPD.Alpha}{Numeric vector indicating the range of alpha posterior distribution corresponding to the High Posterior Density in a probability density distribution}
+\item{W.Posterior.Distribution}{Numeric vector containing the w values estimated from ABC model (posterior distribution)}
+\item{HPD.w}{Numeric vector indicating the range of w posterior distribution corresponding to the High Posterior Density in a probability density distribution}
+\item{Coordinates}{A matrix with x and y coordinates of sites in a metacommunity}
+\item{Observed.Entropy}{A vector containing the observed values of diversity for each site in the metacommunity}
+\item{Mean.Simulated.Entropy}{A vector containing mean values of diversity for each site computed from simulated metacommunities}
 }
 \description{
-mcfly function to estimate the influence of stabilizing niche selection on species diversity across environmental gradients
+We introduce mcfly, an R package to estimate the influence of niche adaptation rate and dispersal limitation on species diversity distribution
+of a given phylogenetic lineage across environmental gradients. For this, mcfly adopts the individual-based metacommunity simulation framework algorithm
+implemented in the package MCSim (See MCSim package for more information on individual based model) coupled to Approximate Bayesian Computation (ABC) to estimate the posterior distribution of (i) the adaptation rate parameter
+of Ornstein-Uhlenbeck (OU) evolutionary model and (ii) the slope the dispersal kernel, i.e, the probability density function of the dispersal success from
+a source to a sink assemblage)that maximizes the association between species diversity across a set of sites and a given environmental gradient.
 }
 \details{
-This function estimate the influence of stabilizing niche selection on species diversity across environmental gradients by applying to
+This function estimate the influence of niche selection on species diversity across environmental gradients by applying to
 a occurrence matrix of species containing presence/absence or abundance an Approximate Bayesian Computation (ABC) framework. We used in ABC a individual
 based-model from MCSim package
 }
