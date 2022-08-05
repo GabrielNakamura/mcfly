@@ -27,7 +27,6 @@
 #' @return list with results to be used in mcfly function
 #' @import stats
 #'
-#' @examples
 f.internal <- function(k,
                        sample.size.posterior,
                        max.sample.size.prior,

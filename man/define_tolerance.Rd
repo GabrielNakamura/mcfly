@@ -61,6 +61,11 @@ calculations of ABC model will not be parallelized.}
 \item{probs}{Numeric indicating the quantiles to be used in tolerance distribution values.
 Default is c(0.8,0.9,0.95,0.99)}
 }
+\value{
+A list containing the following objects:
+\item{Posterior}{A numerical vector with posterior distribution}
+\item{Tolerance}{A numerical vector with tolerance values}
+}
 \description{
 Define tolerance values for ABC model in mcfly
 }

@@ -22,10 +22,12 @@
 #' @param max.sample.size.prior Numeric indicating the maximum number of sampling in prior distribution.
 #'     Default is 100 times the number of parallel process.
 #'
-#' @return
+#' @return A list containing the following objects:
+#'     \item{Posterior}{A numerical vector with posterior distribution}
+#'     \item{Tolerance}{A numerical vector with tolerance values}
+
 #' @export
 #'
-#' @examples
 define_tolerance<-function(comm,phylo,envir,xy.coords,
                       occurrence,entropy.order,
                       niche.breadth=10,m=0.5,
@@ -54,6 +56,6 @@ define_tolerance<-function(comm,phylo,envir,xy.coords,
              output.dir.path=output.dir.path)
  posterior <- test$Distance.measure
  tolerance.options <- quantile(test$Distance.measure, probs = probs)
- res<-list(Posterior = posterior, Tolerance = tolerance.options)
+ res <- list(Posterior = posterior, Tolerance = tolerance.options)
  return(res)
 }
