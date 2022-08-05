@@ -133,14 +133,10 @@ mcfly <- function(comm, phylo, envir, xy.coords,
     alpha.mode<-"uniform"
   }
   if(OU.alpha=="half-life"){
-    prior.alpha<-log(2)/runif(10*max.sample.size.prior,
+    prior.alpha <-log(2)/runif(10*max.sample.size.prior,
                               min=0.03333333*DRoot.mat[,1],max=DRoot.mat[,1])
     alpha.mode<-"half-life"
   }
-
-
-  prior.alpha.res <- prior.alpha
-
 
   if(occurrence){
     comm <- ifelse(comm > 0, yes = 1, no = 0)
