@@ -39,10 +39,16 @@
 #' @param output.dir.path Character indicating the name of directory to save simulations results and metadata used in \code{\link{metasim}}. Default is "delorean".
 #'
 #' @import stats
+#' @import magrittr
 #' @importFrom ggplot2 ggplot
 #' @importFrom ggplot2 geom_histogram
 #' @importFrom ggplot2 geom_density
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_area
 #' @import patchwork
+#' @importFrom dplyr mutate
+#' @importFrom dplyr case_when
+#' @importFrom tibble tibble
 #'
 #' @return A list containing the following objects:
 #'     \item{Time.spent}{The amout of time spent to run the analysis.}
