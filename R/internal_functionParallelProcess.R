@@ -45,7 +45,6 @@ f.internal <- function(k,
                        spp.names,
                        names.comm,
                        entropy.order,
-                       summary.stat,
                        div,
                        tol,
                        return.comm,
@@ -53,8 +52,8 @@ f.internal <- function(k,
                        output.dir.path){
   # List of results
   RES <- vector("list", sample.size.posterior)
-  scenario.ID=paste(scenario.ID,k,sep=".")
-  output.dir.path<-paste(output.dir.path,k,sep = ".")
+  scenario.ID = paste(scenario.ID,k,sep=".")
+  output.dir.path <- paste(output.dir.path,k,sep = ".")
   # number of values in posterior distribution
   cont.size.ent <- 0
   total.sample.size <- 0
@@ -102,24 +101,25 @@ f.internal <- function(k,
     if(is.na(tol.sim.obs.ent)){
       tol.sim.obs.ent <- 1
     }
-  }
 
-  # posterior distribution-----
-  if(tol.sim.obs.ent <= tol){
-    cont.size.ent <- cont.size.ent + 1
-    if(return.comm){
-      RES[[cont.size.ent]]$comm.sim <- comm.sim
+
+    # posterior distribution-----
+    if(tol.sim.obs.ent <= tol){
+      cont.size.ent <- cont.size.ent + 1
+      if(return.comm){
+        RES[[cont.size.ent]]$comm.sim <- comm.sim
+      }
+      RES[[cont.size.ent]]$w.simul.ent <- W.r.sim
+      RES[[cont.size.ent]]$alpha.simul.ent <- alpha.sim
+      RES[[cont.size.ent]]$theta.simul.ent <- theta.sim
+      RES[[cont.size.ent]]$cor.posterior.ent <- cor.obs.simul.ent
+      RES[[cont.size.ent]]$k.niche.simul <- k.niche
+      RES[[cont.size.ent]]$sample.size <- total.sample.size
+      mat.ent[, cont.size.ent] <- vegan::renyi(comm.sim, scales = entropy.order)
     }
-    RES[[cont.size.ent]]$w.simul.ent <- W.r.sim
-    RES[[cont.size.ent]]$alpha.simul.ent <- alpha.sim
-    RES[[cont.size.ent]]$theta.simul.ent <- theta.sim
-    RES[[cont.size.ent]]$cor.posterior.ent <- cor.obs.simul.ent
-    RES[[cont.size.ent]]$k.niche.simul <- k.niche
-    RES[[cont.size.ent]]$sample.size <- total.sample.size
-    mat.ent[, cont.size.ent] <- vegan::renyi(comm.sim, scales = entropy.order)[, 1]
-  }
-  if(cont.size.ent == sample.size.posterior){
-    break
+    if(cont.size.ent == sample.size.posterior){
+      break
+    }
   }
   list_res <- vector(mode = "list", length = 3)
   list_res[[1]] <- RES

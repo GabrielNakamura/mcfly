@@ -71,6 +71,7 @@
 #' @export
 #'
 #
+
 mcfly <- function(comm, phylo, envir, xy.coords,
                   occurrence = TRUE, entropy.order = 1,
                   niche.breadth = 10,
@@ -222,7 +223,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
     #sample.size.posterior
     RES_prior <- RES$prior # priors
     RES <- RES$posterior # posteriors
-    Mean.Simulated.Entropy <- RES$Mean.Simulated.Entropy
+    Mean.Simulated.Entropy <- RES$mean.sim.entropy
     total.sample.size <- sapply(RES, function(x) ifelse(is.null(x), NA,
                                                         x$sample.size))[sample.size.posterior]
     total.sample.size <- ifelse(is.na(total.sample.size),
@@ -257,16 +258,16 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                                scenario.ID=scenario.ID,
                                output.dir.path = output.dir.path)
     RES_prior <- do.call(rbind, lapply(RES, function(x) x$prior))
-    RES <- unlist(lapply(RES, function(x) x$posterior),
-                  recursive = FALSE)
+    RES_posterior <- unlist(lapply(RES, function(x) x$posterior),
+                            recursive = FALSE)
 
     # Total sample size
     # If NA in each last position total.sample.size is equal to
     #sample.size.posterior
     last.set <- seq.int(from = sample.size.posterior, to =
                           sample.size.posterior*n.cluster, by = sample.size.posterior)
-    total.sample.size <- sapply(RES, function(x) ifelse(is.null(x), NA,
-                                                        x$sample.size))[last.set]
+    total.sample.size <- sapply(RES_posterior, function(x) ifelse(is.null(x), NA,
+                                                                  x$sample.size))[last.set]
     total.sample.size <- sum(ifelse(is.na(total.sample.size), yes =
                                       max.sample.size.prior, no = total.sample.size))
     # Calculate the effective sample.size.posterior and max.sample.size.prior
@@ -277,26 +278,27 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   if (newClusters) {
     parallel::stopCluster(parallel)
   }
-  # Organize results
+  # Organize RES_posterior results
   if(return.comm){
-    Simulated.Metacomm <- lapply(RES, function(x) if(is.null(x)) NULL else x$Simulated.Metacomm)
+    Simulated.Metacomm <- lapply(RES_posterior, function(x) if(is.null(x)) NULL else x$comm.sim)
     Simulated.Metacomm <- Simulated.Metacomm[unlist(lapply(Simulated.Metacomm, function(x) !is.null(x)))]
   } else{
     Simulated.Metacomm <- NULL
   }
-  w.simul.ent <- sapply(RES, function(x) ifelse(is.null(x), NA, x$w.simul.ent))
-  alpha.simul.ent <- sapply(RES, function(x) ifelse(is.null(x), NA,
-                                                    x$alpha.simul.ent))
-  theta.simul.ent <- sapply(RES, function(x) ifelse(is.null(x), NA,
-                                                    x$theta.simul.ent))
-  cor.posterior.ent <- sapply(RES, function(x) ifelse(is.null(x), NA,
-                                                      x$cor.posterior.ent))
-  k.niche.simul <- sapply(RES, function(x) ifelse(is.null(x), NA,
-                                                  x$k.niche.simul))
+  w.simul.ent <- sapply(RES_posterior, function(x) ifelse(is.null(x), NA, x$w.simul.ent))
+  alpha.simul.ent <- sapply(RES_posterior, function(x) ifelse(is.null(x), NA,
+                                                              x$alpha.simul.ent))
+  theta.simul.ent <- sapply(RES_posterior, function(x) ifelse(is.null(x), NA,
+                                                              x$theta.simul.ent))
+  cor.posterior.ent <- sapply(RES_posterior, function(x) ifelse(is.null(x), NA,
+                                                                x$cor.posterior.ent))
+  k.niche.simul <- sapply(RES_posterior, function(x) ifelse(is.null(x), NA,
+                                                            x$k.niche.simul))
+
   # Remove NA
-  theta.simul.ent<-theta.simul.ent[!is.na(theta.simul.ent)]
-  cor.posterior.ent<-cor.posterior.ent[!is.na(cor.posterior.ent)]
-  k.niche.simul<-k.niche.simul[!is.na(k.niche.simul)]
+  theta.simul.ent <- theta.simul.ent[!is.na(theta.simul.ent)]
+  cor.posterior.ent <- cor.posterior.ent[!is.na(cor.posterior.ent)]
+  k.niche.simul <- k.niche.simul[!is.na(k.niche.simul)]
   posterior.dist.alpha <- alpha.simul.ent[!is.na(alpha.simul.ent)]
   if(W.r.prior){
     posterior.dist.w <- w.simul.ent[!is.na(w.simul.ent)]
@@ -304,7 +306,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
     posterior.dist.w<-0
   }
   n.tol <- sum(!is.na(alpha.simul.ent))
-  if(n.tol>0){
+  if(n.tol > 0){
     HPD.alpha <- HDInterval::hdi(object = posterior.dist.alpha, credMass =
                                    HPD, allowSplit=TRUE)
     if(W.r.prior){
@@ -360,7 +362,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                    HPD.w = HPD.w,
                    Coordinates = xy.coords,
                    Observed.Entropy = div,
-                   Mean.Simulated.Entropy = Mean.Simulated.Entropy
+                   Mean.Simulated.Entropy = do.call(rbind, lapply(RES, function(x) x$mean.sim.entropy))
   )
   print("...but your kids are gonna love it!!!")
   if(plot.res == TRUE){
