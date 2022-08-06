@@ -45,6 +45,7 @@ f.internal <- function(k,
                        spp.names,
                        names.comm,
                        entropy.order,
+                       summary.stat,
                        div,
                        tol,
                        return.comm,
@@ -58,10 +59,10 @@ f.internal <- function(k,
   cont.size.ent <- 0
   total.sample.size <- 0
   RES.prior <- matrix(NA, nrow =  max.sample.size.prior, ncol = 2)
-  mat.ent <- matrix(NA, nrow = length(names.comm), ncol = length(max.sample.size.prior),
-                dimnames = list(names.comm,
-                                paste("sim", 1:max.sample.size.prior, sep = ""))
-                )
+  mat.ent <- matrix(NA, nrow = length(names.comm), ncol = max.sample.size.prior,
+                    dimnames = list(names.comm,
+                                    paste("sim", 1:max.sample.size.prior, sep = ""))
+  )
   for(i in 1:max.sample.size.prior){
     sim.ID<-paste(scenario.ID,i,sep=".")
     total.sample.size <- total.sample.size+1
@@ -95,31 +96,30 @@ f.internal <- function(k,
     # entropy values----
     ent <- vegan::renyi(comm.sim, scales = entropy.order)
     # summary statistic correlation -----
-      # correlation between observed and simulated entropy
-      cor.obs.simul.ent <- suppressWarnings(cor(ent, div))
-      # tolerance value of ABC
-      tol.sim.obs.ent <- 1 - abs(cor.obs.simul.ent)
-      if(is.na(tol.sim.obs.ent)){
-        tol.sim.obs.ent <- 1
-      }
+    cor.obs.simul.ent <- suppressWarnings(cor(ent, div))
+    # tolerance value of ABC
+    tol.sim.obs.ent <- 1 - abs(cor.obs.simul.ent)
+    if(is.na(tol.sim.obs.ent)){
+      tol.sim.obs.ent <- 1
+    }
+  }
 
-    # posterior distribution-----
-    if(tol.sim.obs.ent <= tol){
-      cont.size.ent <- cont.size.ent + 1
-      if(return.comm){
-        RES[[cont.size.ent]]$comm.sim <- comm.sim
-      }
-      RES[[cont.size.ent]]$w.simul.ent <- W.r.sim
-      RES[[cont.size.ent]]$alpha.simul.ent <- alpha.sim
-      RES[[cont.size.ent]]$theta.simul.ent <- theta.sim
-      RES[[cont.size.ent]]$cor.posterior.ent <- cor.obs.simul.ent
-      RES[[cont.size.ent]]$k.niche.simul <- k.niche
-      RES[[cont.size.ent]]$sample.size <- total.sample.size
-      mat.ent[, cont.size.ent] <- vegan::renyi(comm.sim, scales = entropy.order)[, 1]
+  # posterior distribution-----
+  if(tol.sim.obs.ent <= tol){
+    cont.size.ent <- cont.size.ent + 1
+    if(return.comm){
+      RES[[cont.size.ent]]$comm.sim <- comm.sim
     }
-    if(cont.size.ent == sample.size.posterior){
-      break
-    }
+    RES[[cont.size.ent]]$w.simul.ent <- W.r.sim
+    RES[[cont.size.ent]]$alpha.simul.ent <- alpha.sim
+    RES[[cont.size.ent]]$theta.simul.ent <- theta.sim
+    RES[[cont.size.ent]]$cor.posterior.ent <- cor.obs.simul.ent
+    RES[[cont.size.ent]]$k.niche.simul <- k.niche
+    RES[[cont.size.ent]]$sample.size <- total.sample.size
+    mat.ent[, cont.size.ent] <- vegan::renyi(comm.sim, scales = entropy.order)[, 1]
+  }
+  if(cont.size.ent == sample.size.posterior){
+    break
   }
   list_res <- vector(mode = "list", length = 3)
   list_res[[1]] <- RES

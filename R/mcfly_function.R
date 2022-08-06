@@ -86,7 +86,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                   parallel = NULL,
                   scenario.ID="mcfly",
                   output.dir.path = "delorean"){
-  date.mat<-matrix(NA,2,1,dimnames=list(c("Started on","Finished on")," "))
+  date.mat <- matrix(NA,2,1,dimnames=list(c("Started on","Finished on")," "))
   date.mat[1,] <- date()
   if(!sample.size.posterior%%1==0){
     stop("\n sample.size.posterior must be an integer")
@@ -125,7 +125,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   }
   if(OU.alpha=="half-life"){
     prior.alpha <-log(2)/runif(10*max.sample.size.prior,
-                              min=0.03333333*DRoot.mat[,1],max=DRoot.mat[,1])
+                               min=0.03333333*DRoot.mat[,1],max=DRoot.mat[,1])
     alpha.mode<-"half-life"
   }
 

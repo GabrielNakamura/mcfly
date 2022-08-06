@@ -23,6 +23,7 @@ f.internal(
   spp.names,
   names.comm,
   entropy.order,
+  summary.stat,
   div,
   tol,
   return.comm,
