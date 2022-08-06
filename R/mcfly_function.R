@@ -32,7 +32,7 @@
 #' @param HPD Numeric value indicating the probability mass for the Highest Density Interval for the posterior
 #'     probability distribution obtained in ACB model. This is the same value used in \code{\link{hdi}}. Default is 0.9.
 #' @param return.comm Logical (TRUE/FALSE), indicating if the simulated metacommunities must be returned in the output. Default is FALSE.
-#' @param plot.res Logical, indicates if a plot with posterior and prior distribution, as well as the HPD must be showed. Default is TRUE
+#' @param plot.res Logical, indicates if a plot with posterior and prior distribution, as well as the HPD must be showed. Default is FALSE
 #' @param parallel Numerical value indicating the numbers of cores that must be used in the parallel computation. Default is NULL, indicating that the
 #'     calculations of ABC model will not be parallelized.
 #' @param scenario.ID Character indicating the name of the simulation scenario. The same as used in \code{\link{metasim}}. Default is "mcfly".
@@ -89,7 +89,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                   sample.size.posterior = 240, max.sample.size.prior = 2400,
                   HPD = 0.9,
                   return.comm = FALSE,
-                  plot.res = TRUE,
+                  plot.res = FALSE,
                   parallel = NULL,
                   scenario.ID="mcfly",
                   output.dir.path = "delorean"){
