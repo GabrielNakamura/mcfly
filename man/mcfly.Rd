@@ -21,7 +21,7 @@ mcfly(
   max.sample.size.prior = 2400,
   HPD = 0.9,
   return.comm = FALSE,
-  plot.res = TRUE,
+  plot.res = FALSE,
   parallel = NULL,
   scenario.ID = "mcfly",
   output.dir.path = "delorean"
@@ -65,7 +65,7 @@ probability distribution obtained in ACB model. This is the same value used in \
 
 \item{return.comm}{Logical (TRUE/FALSE), indicating if the simulated metacommunities must be returned in the output. Default is FALSE.}
 
-\item{plot.res}{Logical, indicates if a plot with posterior and prior distribution, as well as the HPD must be showed. Default is TRUE}
+\item{plot.res}{Logical, indicates if a plot with posterior and prior distribution, as well as the HPD must be showed. Default is FALSE}
 
 \item{parallel}{Numerical value indicating the numbers of cores that must be used in the parallel computation. Default is NULL, indicating that the
 calculations of ABC model will not be parallelized.}
