@@ -18,6 +18,7 @@
 #' @param spp.names names of species
 #' @param names.comm names for communities
 #' @param entropy.order diversity value accordingly to entropy order
+#' @param Hill.numbers Logical argument indicating if Hill numbers must be used instead of Renyi entropy. Default is FALSE, indicating that Renyi entropy is the default
 #' @param div diversity value
 #' @param tol tolerance value
 #' @param return.comm logical
@@ -45,6 +46,7 @@ f.internal <- function(k,
                        spp.names,
                        names.comm,
                        entropy.order,
+                       Hill.numbers,
                        div,
                        tol,
                        return.comm,
@@ -93,7 +95,7 @@ f.internal <- function(k,
       comm.sim <- ifelse(comm.sim > 0, yes = 1, no = 0)
     }
     # entropy values----
-    ent <- vegan::renyi(comm.sim, scales = entropy.order)
+    ent <- vegan::renyi(comm.sim, scales = entropy.order, hill = Hill.numbers)
     # summary statistic correlation -----
     cor.obs.simul.ent <- suppressWarnings(cor(ent, div))
     # tolerance value of ABC

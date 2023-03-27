@@ -6,6 +6,7 @@
 #' @param xy.coords A two column matrix containing the coordinates of each community
 #' @param occurrence Logical argument (TRUE or FALSE) indicating if community matrix must be transformed to presence/absence
 #' @param entropy.order Numeric value indicating the scale of Rényi diversity, as accepted by \code{\link{renyi}}. Default is 1
+#' @param Hill.numbers Logical argument indicating if Hill numbers must be used instead of Renyi entropy. Default is FALSE, indicating that Renyi entropy is the default
 #' @param niche.breadth Numeric value indicating the width of niche of species in the metacommunity, as accepted by \code{\link{metasim}}. Default is 10
 #' @param m Numeric value indicating the immigration rate at each site, reported as Hubbel´s m. This is the same parameter accepted by \code{\link{metasim}}.
 #' @param n.timestep Numeric value indicating the number of timesteps used in the simulation of metacommunities,
@@ -29,7 +30,9 @@
 #' @export
 #'
 define_tolerance<-function(comm,phylo,envir,xy.coords,
-                      occurrence,entropy.order,
+                      occurrence,
+                      entropy.order,
+                      Hill.numbers=FALSE,
                       niche.breadth=10,m=0.5,
                       n.timestep=50,
                       OU.alpha=c("uniform","half-life"),
@@ -43,6 +46,7 @@ define_tolerance<-function(comm,phylo,envir,xy.coords,
              xy.coords = xy.coords,
              occurrence = occurrence,
              entropy.order = entropy.order,
+             Hill.numbers = Hill.numbers,
              niche.breadth = niche.breadth,
              m = m,
              n.timestep = n.timestep,
