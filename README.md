@@ -1,4 +1,6 @@
 
+<img src="man/figures/logo_mcfly.png" alt="package logo with a hypothetical machine" width="250px" align="right"/>
+
 # mcfly
 
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/mcfly)](https://cran.r-project.org/package=mcfly)
@@ -39,18 +41,3 @@ vignette("McFly_vignette")
 ```
 
 **Important**: after installation, relaunch R
-
-# Next steps
-
--   [x] Corrigir Summary.stat -> Distance. Corrigir tb o help
--   [x] Inserir data.frame com coordenadas espaciais, obs.entropy e
-    mean.sim.entropy no output
--   [x] Substituir Species.Pools por Data.Attributes, contendo
-    spp.phylogeny, spp.metacommunity, n.sites, max.dist.mst., tempo
-    máximo da árvore (raiz tip)
--   [x] calcular density functions e extrair valores
--   [x] incluir módulo gráfico, incluindo density functions para os
-    posteriores e a curva dlk x r.
--   [ ] e incluir gráfico meia vida. calcular o hpd da meia vida com o
-    log e depois converter
--   [ ] CRAN release
