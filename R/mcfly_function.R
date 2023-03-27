@@ -148,12 +148,7 @@ mcfly <- function(comm, phylo, envir, xy.coords,
   }
   # statistics of observed communities and tree --------------------------
 
-  if(Hill.numbers == TRUE){
-    div <- vegan::renyi(comm, scales = entropy.order, hill = Hill.numbers)
-  } else{
-    div <- vegan::renyi(comm, scales = entropy.order)
-  }
-
+  div <- vegan::renyi(comm, scales = entropy.order, hill = Hill.numbers)
   if(inherits(envir, "matrix") | inherits(envir, "data.frame")){
     if(ncol(envir)>1){
       stop("envir must have only one column")
