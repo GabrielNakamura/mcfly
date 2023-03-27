@@ -17,6 +17,7 @@
 #' @param xy.coords A two column matrix containing the coordinates of each community
 #' @param occurrence Logical argument (TRUE or FALSE) indicating if community matrix must be transformed to presence/absence
 #' @param entropy.order Numeric value indicating the scale of Rényi diversity, as accepted by \code{\link{renyi}}. Default is 1
+#' @param Hill.numbers Logical argument indicating if Hill numbers must be used instead of Renyi entropy. Default is FALSE, indicating that Renyi entropy is the default
 #' @param niche.breadth Numeric value indicating the width of niche of species in the metacommunity, as accepted by \code{\link{metasim}}. Default is 10
 #' @param m Numeric value indicating the immigration rate at each site, reported as Hubbel´s m. This is the same parameter accepted by \code{\link{metasim}}.
 #' @param n.timestep Numeric value indicating the number of timesteps used in the simulation of metacommunities,
@@ -80,6 +81,7 @@
 
 mcfly <- function(comm, phylo, envir, xy.coords,
                   occurrence = TRUE, entropy.order = 1,
+                  Hill.numbers = FALSE,
                   niche.breadth = 10,
                   m = 0.5,
                   n.timestep = 50,
@@ -145,7 +147,13 @@ mcfly <- function(comm, phylo, envir, xy.coords,
     stop("entropy.order must have only one value")
   }
   # statistics of observed communities and tree --------------------------
-  div <- vegan::renyi(comm, scales = entropy.order)
+
+  if(Hill.numbers == TRUE){
+    div <- vegan::renyi(comm, scales = entropy.order, hill = Hill.numbers)
+  } else{
+    div <- vegan::renyi(comm, scales = entropy.order)
+  }
+
   if(inherits(envir, "matrix") | inherits(envir, "data.frame")){
     if(ncol(envir)>1){
       stop("envir must have only one column")
