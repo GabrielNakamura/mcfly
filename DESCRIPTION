@@ -51,3 +51,6 @@ Depends:
 VignetteBuilder:
     knitr, 
     rmarkdown
+Remotes: 
+    sokole/MCSim
+    

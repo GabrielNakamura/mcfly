@@ -117,7 +117,7 @@ f.internal <- function(k,
       RES[[cont.size.ent]]$cor.posterior.ent <- cor.obs.simul.ent
       RES[[cont.size.ent]]$k.niche.simul <- k.niche
       RES[[cont.size.ent]]$sample.size <- total.sample.size
-      mat.ent[, cont.size.ent] <- vegan::renyi(comm.sim, scales = entropy.order)
+      mat.ent[, cont.size.ent] <- vegan::renyi(comm.sim, scales = entropy.order, hill = Hill.numbers)
     }
     if(cont.size.ent == sample.size.posterior){
       break
