@@ -27,6 +27,12 @@
 #' @param W.r.prior Logical (TRUE or FALSE) indicating if the the W.r parameter would be a single value (FALSE) with value of 0, indicating a panmictic metacommunity
 #'     or follow a prior distribution (TRUE) of values calculated as being the slopes of dispersal kernel indicating the contribution of species from neighboring patches
 #'     to the local immigrant pool.
+#' @param root.value A scalar indicating a single value to be passed to \code{link{rTraitCont}} that indicate the value at the root in the simulation process.
+#'      Default is NULL and it is calculated as mean(envir).
+#' @param niche.sigma A scalar indicating a single value to be passed to \code{link{rTraitCont}} that indicate the standard deviation of the random
+#'      component for each branch in simulation process. Default is NULL and is calculated as being the sqrt(sd(envir)).
+#' @param theta.range A scalar indicating the range in which the theta values will be sampled. This is the same parameter to be passed to \code{link{rTraitCont}}.
+#'      Default is 0.95.
 #' @param tol Numeric value that defines the tolerance value (calculated as 1 - correlation) used in ABC model to assemble the posterior distribution. Default is 0.2.
 #' @param sample.size.posterior Numeric value that defines the minimum size of the posterior distribution. Default is 240.
 #' @param max.sample.size.prior Numeric value that defines the maximum size of the posterior distribution. Default is 2400.
@@ -87,6 +93,9 @@ mcfly <- function(comm, phylo, envir, xy.coords,
                   n.timestep = 50,
                   OU.alpha=c("uniform","half-life"),
                   W.r.prior = FALSE,
+                  root.value = NULL,
+                  niche.sigma = NULL,
+                  theta.range = 0.95,
                   tol = 0.2,
                   sample.size.posterior = 240, max.sample.size.prior = 2400,
                   HPD = 0.9,
@@ -158,9 +167,37 @@ mcfly <- function(comm, phylo, envir, xy.coords,
     names(envir) <- names.envir
   }
   envir<-scales::rescale(envir,c(0,100))
-  root.value <- mean(envir)
-  niche.sigma<-sqrt(sd(envir))
-  theta.val <- as.numeric(envir[which(div >= quantile(x=div, probs=0.95))])
+
+  # defining root value and sigma
+  if(is.null(root.value)){
+    root.value <- mean(envir)
+  } else{
+    if(!is.null(root.value)){
+      if(!is.numeric(root.value)){
+        stop("root value must be a scalar")
+      }
+      if(length(root.value) != 1){
+        stop("root value must be a scalar")
+      }
+      root.value <- root.value
+    }
+  }
+
+  if(is.null(niche.sigma)){
+    niche.sigma <- sqrt(sd(envir))
+  } else{
+    if(!is.null(niche.sigma)){
+      if(!is.numeric(niche.sigma)){
+        stop("sigma must be a scalar")
+      }
+      if(length(niche.sigma) != 1){
+        stop("sigma must be a scalar")
+      }
+      niche.sigma <- niche.sigma
+    }
+  }
+
+  theta.val <- as.numeric(envir[which(div >= quantile(x=div, probs= theta.range))])
 
   # Defines dispersal limitation
   if(W.r.prior){
